@@ -20,7 +20,7 @@ function lineGraph( sel, _data ){
 		left: 60,
 		right: 30,
 		top: 30,
-		bottom: 30
+		bottom: 50
 	}
 	this.innerWidth = this.w - this.padding.left - this.padding.right;
 	this.innerHeight = this.h - this.padding.top - this.padding.bottom;
@@ -64,7 +64,7 @@ function lineGraph( sel, _data ){
 
 	this.svg.append("g").attr({
 		class: "y axis",
-		transform: "translate("+this.padding.left +",0)"
+		transform: "translate("+this.padding.left +","+0+")"
 	}).call(this.yA);
 
 		
@@ -102,7 +102,10 @@ function lineGraph( sel, _data ){
 		"margin-right": this.padding.right
 	})
 //	$(".slider>.ui-slider-handle:first").addClass("locked").mousedown(function(e){e.preventDefault()}) //lock the leftmost handle for now
-	
+	this.svg.append("text").attr("class","label").text("Age").attr({
+		x: this.w/2,
+		y: this.h - this.padding.bottom/3
+	})
 	this.drawLines();
 }
 
@@ -114,7 +117,7 @@ lgp.setScales = function(){
 		.domain(d3.extent(this.data, function(d){return +d.WEEK}));
 	
 	this.ys = d3.scale.linear()
-		.range([this.innerTop, this.padding.bottom]) //svg origin is top-left
+		.range([ this.h - this.padding.bottom, this.padding.top]) //svg origin is top-left
 		.domain(d3.extent(this.data, function(d){return +d.FV}));
 }
 lgp.setAxes = function(){

@@ -1,0 +1,12 @@
+/*@pink: #FF2B84;*/
+/* @pink:  #C5299B*/
+.axis path{
+	stroke: black;
+	fill: white;
+	width: 2px;
+}
+
+.line{
+	fill: none;
+	stroke: white;
+}

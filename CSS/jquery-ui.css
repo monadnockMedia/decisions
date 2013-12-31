@@ -1507,3 +1507,7 @@ body .ui-tooltip {
   filter: alpha(opacity=30);
   border-radius: 8px;
 }
+/*mine*/
+.locked{
+	background-color: red !important;
+}

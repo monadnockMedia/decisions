@@ -9,12 +9,10 @@ var fv = {
 		var lastV = 0;
 		var age = startAge;
 		var weekRate = rate/52;
-		console.log("Weekly rate :" + weekRate)
 		
 		for (i = 0; i <= weeks; i++){
 			
 			FV = (lastV + weeklyContribution ) * (1+weekRate);
-			console.log("last / current :" + lastV + " / " + FV);
 			o={};
 			o.FV = FV;
 			o.AGE = age;

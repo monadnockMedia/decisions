@@ -1,0 +1,1 @@
+var fv={futureValueWeekly:function(e,t,n,r){var s=new Array,u=r-n,a=u*52,f=0,l=0,c=n,h=e/52;for(i=0;i<=a;i++){f=(l+t)*(1+h);o={};o.FV=f;o.AGE=c;o.WEEK=i;s.push(o);i%52==1&&(c+=1);l=f}return s}};

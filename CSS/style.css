@@ -1,12 +1,44 @@
 /*@pink: #FF2B84;*/
 /* @pink:  #C5299B*/
-.axis path{
-	stroke: black;
-	fill: white;
-	width: 2px;
+#chart {
+  width: 800px;
+  height: 600px;
+  background-color: lightsteelblue;
 }
-
-.line{
-	fill: none;
-	stroke: white;
+.axis path {
+  stroke: black;
+  fill: none;
+  width: 2px;
+}
+.line {
+  fill: none;
+  stroke: white;
+}
+.line.selection {
+  stroke: cornflowerblue;
+  stroke-width: 3px;
+}
+.line.projection {
+  stroke: grey;
+  width: 2px;
+}
+circle.datum {
+  fill: cornflowerblue;
+  stroke: lightsteelblue;
+}
+circle.hidden {
+  visibility: hidden;
+}
+svg {
+  font-size: 24pt;
+}
+svg text {
+  font-family: "Arial";
+  fill: #181B1E;
+}
+svg text.label {
+  font-size: .5em;
+}
+.tick text {
+  font-size: .33em;
 }

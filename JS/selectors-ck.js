@@ -1,1 +1,1 @@
-var fvd;$(function(){lg=new lineGraph("#chart",fvd)});
+var fvd,lg;$(function(){window.lg=new lineGraph("#chart",fvd)});

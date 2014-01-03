@@ -1,5 +1,6 @@
 var fvd;
+var lg;
 $(function(){
 
-	lg = new lineGraph("#chart",fvd);
+	window.lg = new lineGraph("#chart",fvd);
 })

@@ -1,5 +1,3 @@
-/*@pink: #FF2B84;*/
-/* @pink:  #C5299B*/
 body {
   background-color: gray;
 }
@@ -12,6 +10,9 @@ body {
   stroke: black;
   fill: none;
   width: 2px;
+}
+svg .bar {
+  stroke: red;
 }
 .line {
   fill: none;
@@ -42,6 +43,22 @@ svg text {
 svg text.label {
   font-size: .5em;
 }
+svg text.active {
+  fill: red;
+  opacity: 1 !important;
+}
+svg text.hidden {
+  opacity: 0;
+}
 .tick text {
   font-size: .33em;
+}
+.slider {
+  margin-top: 1em;
+}
+.slider:after {
+  content: attr(title);
+  position: absolute;
+  left: -55px;
+  top: -0.25em;
 }

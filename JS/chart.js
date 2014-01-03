@@ -7,12 +7,21 @@ function lineGraph( sel, _data ){
 		endAge: 65,
 		offsetMonths: 0
 	}
+	
+	this.chartState = JSON.parse(JSON.stringify(this.fvParams));
+	this.sliderP = {
+		rate : {min: 1, max: 7},
+		contribution : {min: 10, max: 100}
+	}
+	
 	this.container = d3.select(sel);
 	this.data = this.futureValueWeekly(this.fvParams);
 	this.vData = this.data;
 	this.pData = [];
 	this.dotSize = 8;
 	this.datalength = this.data.length;
+	this.lastDatum = this.data[this.datalength-1];
+	this.ageRange = {min:15, max: 65 };
 	//set up viewport size, etc.
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
@@ -27,7 +36,6 @@ function lineGraph( sel, _data ){
 	this.innerTop = this.h - this.padding.top;
 	this.innerRight = this.w - this.padding.right;
 	var clipGutter = 5;
-	
 	//now call some functions to build a graph
 	this.setScales();
 	
@@ -60,7 +68,11 @@ function lineGraph( sel, _data ){
 	this.svg.append("g").attr({
 		class: "x axis",
 		transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
-	}).call(this.xA);
+	}).call(this.xA).selectAll("text").attr("class","x tick")
+	.each(function(){
+		check = !(+this.textContent % 5 == 0) ;
+		d3.select(this).classed("hidden", check);
+	});
 
 	this.svg.append("g").attr({
 		class: "y axis",
@@ -75,32 +87,12 @@ function lineGraph( sel, _data ){
 	//and the path
 	this.path = this.svg.append("path").attr("class","line selection");
 	this.proj = this.svg.append("path").attr("class","line projection").attr("stroke-dasharray","5,5");
+	this.xBar = this.svg.append("line").attr("class","x bar").attr("stroke-dasharray","2,4");;
+	this.yBar = this.svg.append("line").attr("class","y bar").attr("stroke-dasharray","2,4");;
 	this.dot = this.svg.append("circle").attr("class","datum").attr("r",this.dotSize);
 	this.dotLabel = this.svg.append("text").attr("class","label dot").attr("text-anchor","middle");
 	//add slider range
-	this.container.append("div").attr("class", "slider age");
-	
-	$(".slider.age").slider({
-		range: true,
-		min: 0,
-		max: _self.datalength,
-		values: [0,_self.datalength],
-		slide: function(ev, ui){
-			if($(ui.handle).hasClass("locked")){
-				return false;
-			}else{
-				_self.sliceData(ui.values[0], ui.values[1]);
-				_self.drawLines();
-				return true;
-			}
-			
-			
-		
-		}
-	}).css({
-		"margin-left": this.padding.left,
-		"margin-right": this.padding.right
-	})
+	this.buildSliders();
 //	$(".slider>.ui-slider-handle:first").addClass("locked").mousedown(function(e){e.preventDefault()}) //lock the leftmost handle for now
 	this.svg.append("text").attr("class","label").text("Age").attr({
 		x: this.w/2,
@@ -115,20 +107,33 @@ lgp.setScales = function(){
 	this.xs = d3.scale.linear()
 		.range([this.padding.left, this.innerRight])
 		.domain(d3.extent(this.data, function(d){return +d.WEEK}));
-	
+		
+
 	this.ys = d3.scale.linear()
 		.range([ this.h - this.padding.bottom, this.padding.top]) //svg origin is top-left
 		.domain(d3.extent(this.data, function(d){return +d.FV}));
+	
 }
+
+lgp.updateScales = function(){
+	this.ys.domain(d3.extent(this.data, function(d){return +d.FV}));
+}
+
 lgp.setAxes = function(){
 	//set up axes
+	
+	
+	
 	this.xA = d3.svg.axis()
 		.scale(this.xs)
 		.orient("bottom")
-		.ticks((this.datalength/52)/5).tickFormat(function(d){
+		.ticks(50)
+
+		.tickFormat(function(d){
 			o = _self.data[d];
 			return o.AGE;
 			})
+			
 		
 	this.yA = d3.svg.axis()
 		.scale(this.ys)
@@ -136,30 +141,154 @@ lgp.setAxes = function(){
 		.tickFormat(function(t){return finance.format(t, 'USD')})
 }
 
-lgp.sliceData = function(min,max){
-	if (min != this.fvParams.offsetMonths){ 
-		console.log("getting data")
-		this.fvParams.offsetMonths = min;
+lgp.updateAxes = function(){
+	this.yA.scale(this.ys);
+	this.svg.select(".y.axis").call(this.yA);
+}
+
+lgp.buildSliders = function(){
+	this.container.append("div").attr({	
+		"class": "slider age",
+		title: "Age"
+	});
+	this.container.append("div").attr({
+		"class": "slider contribution",
+		title: "$"
+		});
+	this.container.append("div").attr(	{
+			"class": "slider rate",
+			title: "Rate"
+			});
+	
+	$(".slider").css({
+		"margin-left": this.padding.left,
+		"margin-right": this.padding.right
+	});
+	
+	$(".slider.age").slider({
+		range: true,
+		min: 0,
+		max: _self.datalength,
+		values: [0,_self.datalength],
+		slide: function(ev, ui){
+			if($(ui.handle).hasClass("locked")){
+				return false;
+			}else{
+				_self.ageRange.min = ui.values[0];
+				_self.ageRange.max = ui.values[1];
+				_self.redraw();
+				return true;
+			}
+		}
+	})
+	
+	$(".slider.contribution").slider({
+		min: this.sliderP.contribution.min,
+		max: this.sliderP.contribution.max,
+		slide: function(ev, ui){
+			_self.fvParams.weeklyContribution = ui.value;
+			_self.redraw();
+		}
+	})
+	$(".slider.rate").slider({
+		min: this.sliderP.rate.min,
+		max: this.sliderP.rate.max,
+		step: 0.1,
+		slide: function(ev, ui){
+			_self.fvParams.rate = ui.value/100;
+			_self.redraw();
+		}
+	})
+}
+
+lgp.redraw = function(){
+	if (this.update){
+		_self.data = _self.futureValueWeekly(_self.fvParams);
+		console.log("params changed");
+	}
+	this.lastDatum = this.vData[this.vData.length-1];
+	_self.updateScales();
+	
+	this.svg.selectAll(".x.tick").each(function(){
+		check = (this.textContent) == _self.lastDatum.AGE;
+		d3.select(this).classed("active", check);
+	});
+	
+
+	
+	_self.updateAxes();
+	_self.sliceData();
+	_self.drawLines();
+	
+	
+	
+	this.chartState = JSON.parse(JSON.stringify(this.fvParams));
+}
+
+lgp.update = function(){
+	var p = this.fvParams;
+	var state = this.chartState;
+	var doUpdate = null;
+//	console.log(state);
+	for (var i in state){
+		
+		att = p[i];
+		st = state[i];
+		//console.log("comparing "+att+" to "+st);
+		if (att != st){
+			console.log("mismatch")
+			doUpdate = true;
+			break;
+		} 
+	}
+	return doUpdate;
+}
+
+
+lgp.sliceData = function(){
+	p = this.ageRange;
+	if (p.min != this.fvParams.offsetMonths){ 
+		//console.log("getting data")
+		this.fvParams.offsetMonths = p.min;
 		this.data = this.futureValueWeekly(this.fvParams);
 	}
-	console.log("slicing min/max: "+min+" / "+max)
-	this.vData = this.data.slice(min,max);
-	this.pData = this.data.slice(max,this.data.length)
+	//console.log("slicing min/max: "+p.min+" / "+p.max)
+	this.vData = this.data.slice(p.min,p.max);
+	this.pData = this.data.slice(p.max,this.data.length)
 }
 
 lgp.drawLines = function(){
+	//console.log("drawing");
 	this.path.datum(this.vData).attr("d", this.line); 
 	this.proj.datum(this.pData).attr("d", this.line);
-	lastDatum = this.vData[this.vData.length-1];
-	console.log(lastDatum);
+	
+	
+	datumX = this.xs(this.lastDatum.WEEK);
+	datumY = this.ys(this.lastDatum.FV);
+	//console.log(lastDatum);
 	this.dot.attr({
-		cx: _self.xs(lastDatum.WEEK),
-		cy: _self.ys(lastDatum.FV),
+		cx: datumX,
+		cy: datumY,
 	})
 	this.dotLabel.attr({
-		x: _self.xs(lastDatum.WEEK),
-		y: _self.ys(lastDatum.FV)-this.dotSize-2,
-	}).text(finance.format(lastDatum.FV, 'USD'))
+		x: datumX,
+		y: datumY-this.dotSize-2,
+	}).text(finance.format(this.lastDatum.FV, 'USD'))
+	
+	this.xBar.attr({
+		x1: datumX,
+		y1: this.ys(0),
+		x2: datumX,
+		y2: datumY
+	})
+	
+	this.yBar.attr({
+		x1: this.xs(0),
+		y1: datumY,
+		x2: datumX,
+		y2: datumY
+	})
+
 }
 		
 lgp.stripPx = function(_str){
@@ -167,30 +296,57 @@ lgp.stripPx = function(_str){
 	return +_str.slice(0,i);
 }
 
+/*lgp.futureValueWeekly = function( p )
+{
+        
+        var ret = new Array();
+        p.years = p.endAge - p.startAge;
+        p.weeks = p.years*52;
+        p.FV = 0;
+        p.lastV = 0;
+        p.age = p.startAge;
+        p.weekRate = p.rate/52;
+        console.log(p);
+        
+        for (i = 0; i <= p.weeks; i++){
+                
+                p.FV = (i > p.offsetMonths ) ? (p.lastV + p.weeklyContribution ) * (1+p.weekRate) : 0;
+                o={};
+                o.FV = p.FV;
+                o.AGE = p.age;
+                o.WEEK = i ;
+                ret.push(o);
+                if (i % 52 == 1) { 
+                        p.age+=1 
+                };
+                p.lastV = p.FV;
+        }
+        return ret;
+} */
+
 lgp.futureValueWeekly = function( p )
 {
-	
-	var ret = new Array();
-	p.years = p.endAge - p.startAge;
-	p.weeks = p.years*52;
-	p.FV = 0;
-	p.lastV = 0;
-	p.age = p.startAge;
-	p.weekRate = p.rate/52;
-	console.log(p);
-	
-	for (i = 0; i <= p.weeks; i++){
-		
-		p.FV = (i > p.offsetMonths ) ? (p.lastV + p.weeklyContribution ) * (1+p.weekRate) : 0;
-		o={};
-		o.FV = p.FV;
-		o.AGE = p.age;
-		o.WEEK = i ;
-		ret.push(o);
-		if (i % 52 == 1) { 
-			p.age+=1 
-		};
-		p.lastV = p.FV;
-	}
-	return ret;
+        
+        var ret = new Array();
+        var years = p.endAge - p.startAge;
+        var weeks = years*52;
+        var FV = 0;
+        var lastV = 0;
+        var age = p.startAge;
+        var weekRate = p.rate/52;
+        for (i = 0; i <= weeks; i++){
+                
+                FV = (i > p.offsetMonths ) ? (lastV + p.weeklyContribution ) * (1+weekRate) : 0;
+                o={};
+                o.FV = FV;
+                o.AGE = age;
+                o.WEEK = i ;
+                ret.push(o);
+                if ((i+1) % 52 ==  0 ) { 
+                        age+=1 
+                };
+                lastV = FV;
+        }
+        return ret;
+
 }

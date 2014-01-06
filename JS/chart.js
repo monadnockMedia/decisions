@@ -11,17 +11,19 @@ function lineGraph( sel, _data ){
 	this.chartState = JSON.parse(JSON.stringify(this.fvParams));
 	this.sliderP = {
 		rate : {min: 1, max: 7},
-		contribution : {min: 10, max: 100}
+		contribution : {min: 0, max: 100}
 	}
 	
 	this.container = d3.select(sel);
 	this.data = this.futureValueWeekly(this.fvParams);
+	this.ages = this.collapseAges(this.data.map(function(d){return d.AGE}));
 	this.vData = this.data;
 	this.pData = [];
 	this.dotSize = 8;
 	this.datalength = this.data.length;
 	this.lastDatum = this.data[this.datalength-1];
-	this.ageRange = {min:15, max: 65 };
+	this.firstDatum = this.data[0];
+	this.weekRange = {min:this.firstDatum.WEEK, max: this.lastDatum.WEEK  };
 	//set up viewport size, etc.
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
@@ -64,20 +66,7 @@ function lineGraph( sel, _data ){
 	this.chartBody = this.svg.append("g")
 		.attr("clip-path", "url(#clip)").attr("class","chartBody")
 	
-	//now add groups for axes, using our axis functions
-	this.svg.append("g").attr({
-		class: "x axis",
-		transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
-	}).call(this.xA).selectAll("text").attr("class","x tick")
-	.each(function(){
-		check = !(+this.textContent % 5 == 0) ;
-		d3.select(this).classed("hidden", check);
-	});
-
-	this.svg.append("g").attr({
-		class: "y axis",
-		transform: "translate("+this.padding.left +","+0+")"
-	}).call(this.yA);
+	this.addAxes();
 
 		
 	//and a linear function
@@ -108,6 +97,10 @@ lgp.setScales = function(){
 		.range([this.padding.left, this.innerRight])
 		.domain(d3.extent(this.data, function(d){return +d.WEEK}));
 		
+	this.xs2 = d3.scale.linear()
+		.range([this.padding.left, this.innerRight])
+		.domain(d3.extent(this.ages, function(d){return +d}));
+		
 
 	this.ys = d3.scale.linear()
 		.range([ this.h - this.padding.bottom, this.padding.top]) //svg origin is top-left
@@ -122,7 +115,11 @@ lgp.updateScales = function(){
 lgp.setAxes = function(){
 	//set up axes
 	
-	
+	this.xA2 = d3.svg.axis()
+		.scale(this.xs2)
+		.orient("bottom")
+		.ticks(50)
+
 	
 	this.xA = d3.svg.axis()
 		.scale(this.xs)
@@ -141,6 +138,31 @@ lgp.setAxes = function(){
 		.tickFormat(function(t){return finance.format(t, 'USD')})
 }
 
+lgp.addAxes = function(){
+	//now add groups for axes, using our axis functions
+/*	this.svg.append("g").attr({
+		class: "x axis",
+		transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
+	}).call(this.xA).selectAll("text").attr("class","x tick")
+	.each(function(){
+		check = !(+this.textContent % 5 == 0) ;
+		d3.select(this).classed("hidden", check);
+	}); */
+	this.svg.append("g").attr({
+			class: "x axis",
+			transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
+		}).call(this.xA2).selectAll("text").attr("class","x tick")
+		.each(function(){
+			check = !(+this.textContent % 5 == 0) ;
+			d3.select(this).classed("hidden", check);
+		});
+		
+		
+	this.svg.append("g").attr({
+		class: "y axis",
+		transform: "translate("+this.padding.left +","+0+")"
+	}).call(this.yA);
+}
 lgp.updateAxes = function(){
 	this.yA.scale(this.ys);
 	this.svg.select(".y.axis").call(this.yA);
@@ -154,6 +176,7 @@ lgp.buildSliders = function(){
 	this.container.append("div").attr({
 		"class": "slider contribution",
 		title: "$"
+		
 		});
 	this.container.append("div").attr(	{
 			"class": "slider rate",
@@ -164,6 +187,8 @@ lgp.buildSliders = function(){
 		"margin-left": this.padding.left,
 		"margin-right": this.padding.right
 	});
+	var maxSpan = 10;
+	var span;
 	
 	$(".slider.age").slider({
 		range: true,
@@ -171,20 +196,40 @@ lgp.buildSliders = function(){
 		max: _self.datalength,
 		values: [0,_self.datalength],
 		slide: function(ev, ui){
+			
+			span = Math.ceil((ui.values[1] - ui.values[0])/52);  //span is in years, scale is in months.
+			
 			if($(ui.handle).hasClass("locked")){
 				return false;
-			}else{
-				_self.ageRange.min = ui.values[0];
-				_self.ageRange.max = ui.values[1];
-				_self.redraw();
-				return true;
 			}
+			else if( span <= maxSpan){ //span is 10 years or less
+				console.log("minSpan");
+				hI = +( ui.value == ui.values[1]  ); //index of this handle, +false == 0;
+				hT = +!hI; //index of other handle, +!false = +true = 1
+				console.log(ui.values[hT] != _self.datalength);
+				
+				if(ui.values[hT] == 0 || ui.values[hT] >= _self.datalength){
+					return false;
+				}else{
+					var newVal = (hI == 0) ? ui.value+maxSpan*52 :ui.value-maxSpan*52 ;
+					$(this).slider('values',hT,newVal);
+				}
+				
+			}
+			
+				
+			
+			_self.weekRange.min = ui.values[0];
+			_self.weekRange.max = ui.values[1];
+			_self.redraw();
+			return true;
 		}
 	})
 	
 	$(".slider.contribution").slider({
 		min: this.sliderP.contribution.min,
 		max: this.sliderP.contribution.max,
+		value: _self.fvParams.weeklyContribution,
 		slide: function(ev, ui){
 			_self.fvParams.weeklyContribution = ui.value;
 			_self.redraw();
@@ -194,6 +239,7 @@ lgp.buildSliders = function(){
 		min: this.sliderP.rate.min,
 		max: this.sliderP.rate.max,
 		step: 0.1,
+		value: _self.fvParams.rate*100,
 		slide: function(ev, ui){
 			_self.fvParams.rate = ui.value/100;
 			_self.redraw();
@@ -204,20 +250,25 @@ lgp.buildSliders = function(){
 lgp.redraw = function(){
 	if (this.update){
 		_self.data = _self.futureValueWeekly(_self.fvParams);
-		console.log("params changed");
+		//console.log("params changed");
 	}
+	_self.updateAxes();
+	_self.sliceData();
 	this.lastDatum = this.vData[this.vData.length-1];
+	this.firstDatum = this.vData[0];
 	_self.updateScales();
 	
 	this.svg.selectAll(".x.tick").each(function(){
-		check = (this.textContent) == _self.lastDatum.AGE;
-		d3.select(this).classed("active", check);
+		checkLast = (this.textContent) == _self.lastDatum.AGE;
+		checkFirst = (this.textContent) == _self.firstDatum.AGE;
+		d3.select(this).classed("active", (checkLast || checkFirst )); //its active if either are true
+		d3.select(this).classed("last", checkLast)
+		d3.select(this).classed("first", checkFirst);
 	});
 	
 
 	
-	_self.updateAxes();
-	_self.sliceData();
+
 	_self.drawLines();
 	
 	
@@ -246,7 +297,7 @@ lgp.update = function(){
 
 
 lgp.sliceData = function(){
-	p = this.ageRange;
+	p = this.weekRange;
 	if (p.min != this.fvParams.offsetMonths){ 
 		//console.log("getting data")
 		this.fvParams.offsetMonths = p.min;
@@ -295,7 +346,20 @@ lgp.stripPx = function(_str){
 	i = _str.indexOf("px");
 	return +_str.slice(0,i);
 }
+lgp.collapseAges = function(arr) {
+    var a = [], prev;
 
+    arr.sort();
+    for ( var i = 0; i < arr.length; i++ ) {
+        if ( arr[i] !== prev ) {
+            a.push(arr[i]);
+            
+        }
+        prev = arr[i];
+    }
+
+    return a;
+}
 /*lgp.futureValueWeekly = function( p )
 {
         

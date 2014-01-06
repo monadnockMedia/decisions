@@ -1,25 +1,31 @@
 body {
   background-color: gray;
+  width: 1024px;
+  height: 768px;
+  background-repeat: none;
 }
 #chart {
   width: 800px;
   height: 600px;
   background-color: lightsteelblue;
+  margin-right: auto;
+  margin-left: auto;
+  background-color: rgba(0, 0, 0, 0.8);
 }
 .axis path {
-  stroke: black;
+  stroke: #ffffff;
   fill: none;
   width: 2px;
 }
 svg .bar {
-  stroke: red;
+  stroke: #ad1aac;
 }
 .line {
   fill: none;
   stroke: white;
 }
 .line.selection {
-  stroke: cornflowerblue;
+  stroke: #a4dbe8;
   stroke-width: 3px;
 }
 .line.projection {
@@ -27,8 +33,9 @@ svg .bar {
   width: 2px;
 }
 circle.datum {
-  fill: cornflowerblue;
-  stroke: lightsteelblue;
+  fill: #a4dbe8;
+  stroke: rgba(0, 0, 0, 0.8);
+  stroke-width: 2px;
 }
 circle.hidden {
   visibility: hidden;
@@ -38,13 +45,13 @@ svg {
 }
 svg text {
   font-family: "Arial";
-  fill: #181B1E;
+  fill: #ffffff;
 }
 svg text.label {
   font-size: .5em;
 }
 svg text.active {
-  fill: red;
+  fill: #ad1aac;
   opacity: 1 !important;
 }
 svg text.hidden {

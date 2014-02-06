@@ -61,11 +61,16 @@ svg text.hidden {
   font-size: .33em;
 }
 .slider {
-  margin-top: 1em;
+  font-family: Arial;
+  margin-top: 1.5em;
 }
 .slider:after {
   content: attr(title);
   position: absolute;
   left: -55px;
   top: -0.25em;
+}
+.tooltip {
+  color: #ffffff;
+  font-family: Arial;
 }

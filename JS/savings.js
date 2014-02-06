@@ -1,4 +1,4 @@
-function lineGraph( sel, _data ){
+function savingsGraph( sel, _data ){
 	_self = this;
 	this.fvParams = {
 		rate: 0.03, 
@@ -90,7 +90,7 @@ function lineGraph( sel, _data ){
 	this.drawLines();
 }
 
-lgp = lineGraph.prototype;
+lgp = savingsGraph.prototype;
 lgp.setScales = function(){
 	//set up scales for each axis / datum
 	this.xs = d3.scale.linear()
@@ -169,6 +169,7 @@ lgp.updateAxes = function(){
 }
 
 lgp.buildSliders = function(){
+	this.container.append("div").attr({"class":"tooltip"}).append("h1");
 	this.container.append("div").attr({	
 		"class": "slider age",
 		title: "Age"
@@ -187,16 +188,24 @@ lgp.buildSliders = function(){
 		"margin-left": this.padding.left,
 		"margin-right": this.padding.right
 	});
+	
 	var maxSpan = 10;
 	var span;
-	
+	$(".slider").slider({
+		start: function(ev,ui){
+			moveTip(ui);
+			showTip();
+			$(this)
+		}
+	});
 	$(".slider.age").slider({
 		range: true,
 		min: 0,
 		max: _self.datalength,
 		values: [0,_self.datalength],
+		start: null,
 		slide: function(ev, ui){
-			
+				
 			span = Math.ceil((ui.values[1] - ui.values[0])/52);  //span is in years, scale is in months.
 			
 			if($(ui.handle).hasClass("locked")){
@@ -225,26 +234,60 @@ lgp.buildSliders = function(){
 			return true;
 		}
 	})
+	var moveTip = function(_ui,s){
+			var pos = $(_ui.handle).offset();
+			var offset = $(_ui.handle).width() /2;
+			console.log(offset);
+			$(".tooltip").css({
+				top: pos.top,
+				left: +pos.left+offset
+			}).html(s)
+	}
+	var hideTip = function(){
+		$(".tooltip").animate({
+			opacity: 0
+		})
+	}
 	
+	var showTip = function(){
+		$(".tooltip").animate({
+			opacity: 1
+		})
+	}
+
+
 	$(".slider.contribution").slider({
 		min: this.sliderP.contribution.min,
 		max: this.sliderP.contribution.max,
 		value: _self.fvParams.weeklyContribution,
 		slide: function(ev, ui){
+			moveTip(ui, "$"+ui.value);
 			_self.fvParams.weeklyContribution = ui.value;
 			_self.redraw();
+		},
+		stop: function(ev,ui){
+			$(this).find(".ui-slider-handle").text("$"+ui.value);
+			hideTip();
 		}
 	})
+	
 	$(".slider.rate").slider({
 		min: this.sliderP.rate.min,
 		max: this.sliderP.rate.max,
 		step: 0.1,
 		value: _self.fvParams.rate*100,
 		slide: function(ev, ui){
+			moveTip(ui, ui.value+"%");
 			_self.fvParams.rate = ui.value/100;
 			_self.redraw();
+		},
+		stop: function(ev,ui){
+			$(this).find(".ui-slider-handle").text(ui.value+"%");
+			hideTip();
 		}
 	})
+	
+
 }
 
 lgp.redraw = function(){
@@ -373,7 +416,7 @@ lgp.collapseAges = function(arr) {
         console.log(p);
         
         for (i = 0; i <= p.weeks; i++){
-                graduated annuity paymentsgraduated annuity payments
+                
                 p.FV = (i > p.offsetMonths ) ? (p.lastV + p.weeklyContribution ) * (1+p.weekRate) : 0;
                 o={};
                 o.FV = p.FV;

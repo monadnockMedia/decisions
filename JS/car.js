@@ -4,13 +4,17 @@ function carGraph( sel, _data ){
 		"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
 	];
 	this.data = null;
+	this.sliderP = {
+		rate : {min: 1, max: 21},
+		contribution : {min: 200, max: 1000}
+	}
 	this.cars = {
 		"economy":15000,
 		'midsized':25000,
 		'luxury':50000
 	}
 	this.amParams = {
-		contrib: 200,
+		contrib: 450,
 		rate: 2,
 		balance: this.cars.midsized
 	}
@@ -67,6 +71,10 @@ cgP = carGraph.prototype;
 
 cgP.setScales = function(){
 	//set up scales for each axis / datum
+/*	this.xs = d3.time.scale()
+		.range([this.padding.left, this.innerRight])
+		.domain(d3.extent(this.data, function(d){return +d.date}));*/
+		
 	this.xs = d3.time.scale()
 		.range([this.padding.left, this.innerRight])
 		.domain(d3.extent(this.data, function(d){return +d.date}));
@@ -75,6 +83,15 @@ cgP.setScales = function(){
 		.range([ this.h - this.padding.bottom, this.padding.top]) //svg origin is top-left
 		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
 }
+
+cgP.updateScales = function(){
+	this.xs
+		.domain(d3.extent(this.data, function(d){return +d.date}));
+		
+	this.ys
+		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+}
+
 cgP.setAxes = function(){
 	//set up axes
 	
@@ -83,8 +100,8 @@ cgP.setAxes = function(){
 	this.xA = d3.svg.axis()
 		.scale(this.xs)
 		.orient("bottom")
-		.ticks(this.amParams.length)
-		.tickFormat(function(t){return self.months[t.getMonth()]});
+		.ticks(10)
+		.tickFormat(function(t){return t.getUTCFullYear()});
 		
 	this.yA = d3.svg.axis()
 		.scale(this.ys)
@@ -96,21 +113,21 @@ cgP.addAxes = function(){
 	this.svg.append("g").attr({
 			class: "x axis",
 			transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
-		}).call(this.xA).selectAll("text").attr({
-			"text-align":"center",
-			"transform":"rotate(90) translate(20 -10) scale(0.8)"
-		})
+		}).call(this.xA)
 	
 		
 		
 	this.svg.append("g").attr({
 		class: "y axis",
-		transform: "translate("+this.padding.left +","+0+")"
+		transform: "translate("+(this.padding.left-2) +","+0+")"
 	}).call(this.yA)
 }
 cgP.updateAxes = function(){
 	this.yA.scale(this.ys);
 	this.svg.select(".y.axis").call(this.yA);
+	
+	this.xA.scale(this.xs);
+	this.svg.select(".x.axis").call(this.xA);
 }
 cgP.amortize = function(){
 	with (this.amParams){
@@ -119,16 +136,17 @@ cgP.amortize = function(){
 		var dOff;
 		amort.forEach(function(o,i){
 		//	console.log("item "+i+" :: "+o);
+			o.month = i;
 			if(i==0){
+				
 				dOff = +o.date.getFullYear();
 				o.year = 0;
 				o.cumToPrinciple = o.paymentToPrinciple;
-				o.totalPaid = o.cumToPrinciple + o.interest;
 			}else{
 				o.year = +o.date.getFullYear() - dOff;
-				o.cumToPrinciple = amort[i-1].cumToPrinciple + o.paymentToPrinciple;
-				o.totalPaid = o.cumToPrinciple + o.interest;
+				o.cumToPrinciple = amort[i-1].cumToPrinciple + o.paymentToPrinciple;	
 			}
+			o.totalPaid = o.cumToPrinciple + o.interest;
 		})
 		this.data = amort;
 	}
@@ -148,22 +166,151 @@ cgP.addLines = function(){
 		total : d3.svg.line()
 			.x(function(d){ return self.xs(d.date) })
 			.y(function(d){ return self.ys(d.totalPaid)}),
-		}
 		
+		
+		area : d3.svg.line()
+			.x(function(d){ return self.xs(d.date) })
+			.y(function(d){ return self.ys(d.val)}),
+		}
 
 	this.lineGroup = this.svg.append("g").attr("class","lineGroup");
-	
+	this.area = this.lineGroup.append("path").attr("class","line area");
 	this.total = this.lineGroup.append("path").attr("class","line total");
 	this.interest = this.lineGroup.append("path").attr("class","line interest");
+	
 	this.balance = this.lineGroup.append("path").attr("class","line balance");
 	this.drawLines();
+	this.buildSliders();
 }
 
 cgP.drawLines = function(){
-	this.total.datum(this.data).attr("d", self.lineFunctions.total);
-	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
-	this.balance.datum(this.data).attr("d", this.lineFunctions.balance);
+	var prin = this.data.map(function(d){return {date: d.date, val: d.cumToPrinciple}});
+	var total = this.data.map(function(d){return {date: d.date, val: d.totalPaid}});
+	
+	areaData = prin.concat(total.reverse());
+	this.area.datum(areaData).transition().style("opacity",0).attr("d", self.lineFunctions.area).transition().style("opacity",1);
+	this.total.datum(this.data).transition().attr("d", self.lineFunctions.total);
+//	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
+	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance)
 }
+
+
+
+cgP.buildSliders = function(){
+	this.container.append("div").attr({"class":"tooltip"}).append("h1");
+
+	
+	this.contributionSlider = this.container.append("div").attr({
+		"class": "slider contribution car",
+		title: "Payment"
+		
+		});
+	this.rateSlider = this.container.append("div").attr(	{
+			"class": "slider rate car",
+			title: "Loan APR"
+			});
+	
+	$(".slider").css({
+		"margin-left": this.padding.left*2.5,
+		"margin-right": this.padding.right
+	});
+	
+
+
+	var moveTip = function(ui) {
+			
+		
+		};
+	
+	var hideTip = function(){
+		$(".tooltip").animate({
+			opacity: 0
+		})
+	}
+	
+	var showTip = function(){
+		$(".tooltip").animate({
+			opacity: 1
+		})
+	}
+
+	$(".slider.contribution").slider({
+		min: self.sliderP.contribution.min,
+		max: self.sliderP.contribution.max,
+		value: self.amParams.contrib,
+		slide: function(ev, ui){
+			console.log(ui.handle);
+			$(".tooltip").css({
+				"left": self.sliderScales.contribution(ui.value),
+				"top": $(ui.handle).offset().top
+			}).html("$"+ui.value)
+			//setTimeout(moveTip(ui), 15);
+			self.amParams.contrib = ui.value;
+			
+		},
+		stop: function(ev,ui){
+			$(this).find(".ui-slider-handle").text("$"+ui.value);
+			hideTip();
+			self.redraw();
+		}
+	}).find("a").html("$"+self.amParams.contrib);
+	
+	this.sliderScales = {};
+	contOff = $(".slider.contribution").offset();
+	contW = $(".slider.contribution").width();
+	this.sliderScales.contribution = d3.scale.linear()
+		.range([contOff.left,contOff.left+contW ])
+		.domain([self.sliderP.contribution.min,self.sliderP.contribution.max]);
+	
+	
+
+
+	$(".slider.rate").slider({
+		min: self.sliderP.rate.min,
+		max: self.sliderP.rate.max,
+		step: 1,
+		value: self.amParams.rate,
+		slide: function(ev, ui){
+			console.log("rateChange")
+			$(".tooltip").css({
+				"left": self.sliderScales.rate(ui.value),
+				"top": $(ui.handle).offset().top
+			}).html(ui.value+"%")
+			self.amParams.rate = ui.value;
+	
+		},
+		stop: function(ev,ui){
+			$(this).find(".ui-slider-handle").text(ui.value+"%");
+			hideTip();
+			console.log(self.amParams);
+			self.redraw();
+		}
+	}).find("a").html(self.amParams.rate+"%");
+	
+	rateOff = $(".slider.rate").offset();
+	rateW = $(".slider.rate").width();
+	this.sliderScales.rate = d3.scale.linear()
+		.range([rateOff.left,rateOff.left+rateW ])
+		.domain([self.sliderP.rate.min,self.sliderP.rate.max]);
+	
+	$(".slider").slider({
+		start: function(ev,ui){
+		//	moveTip(ui);
+			showTip();
+		}
+	});
+	
+
+}
+cgP.redraw = function(){
+	this.amortize();
+	this.updateScales();
+	this.updateAxes();
+	this.drawLines();
+}
+
+
+
 cgP.stripPx = function(_str){
 	i = _str.indexOf("px");
 	return +_str.slice(0,i);

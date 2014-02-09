@@ -1,12 +1,44 @@
+@font-face {
+  font-family: 'label';
+  src: url('../FONTS/GothamRnd-Book.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'bold';
+  src: url('../FONTS/GothamRnd-Bold.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'sub-title';
+  src: url('../FONTS/gothamrnd-light-webfont.svg#gotham_roundedlight') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'medium';
+  src: url('../FONTS/GothamRnd-Medium.otf') format('opentype');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'title';
+  src: url('../FONTS/linotype_-_universltpro-ultracondensed-webfont.svg#univers_lt_pro59ultraCn') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
 body {
+  overflow: hidden;
   background-color: gray;
+  background-image: url("../IMG/money_tunnel.png");
   width: 1024px;
   height: 768px;
   background-repeat: none;
 }
 #chart {
   width: 800px;
-  height: 600px;
+  height: 550px;
   background-color: lightsteelblue;
   margin-right: auto;
   margin-left: auto;
@@ -17,11 +49,22 @@ body {
   fill: none;
   width: 2px;
 }
+.glow text {
+  stroke: #ad1aac;
+  filter: url(#glow1);
+}
+.glow domain {
+  visibility: hiddne;
+}
 svg .bar {
   stroke: #ad1aac;
 }
+path {
+  shape-rendering: crispEdges;
+}
 .line {
   fill: none;
+  shape-rendering: auto;
   stroke: white;
 }
 .line.selection {
@@ -31,6 +74,22 @@ svg .bar {
 .line.projection {
   stroke: grey;
   width: 2px;
+}
+.line.area {
+  fill: rgba(197, 41, 155, 0.5);
+  fill: url(#diagonalHatch);
+  stroke: none;
+}
+.line.total {
+  stroke-width: 3px;
+  stroke: #10069f;
+}
+.line.balance {
+  stroke: #ad1aac;
+  stroke-width: 3px;
+}
+#diagonalHatch > path {
+  stroke: rgba(164, 219, 232, 0.6);
 }
 circle.datum {
   fill: #a4dbe8;
@@ -44,18 +103,21 @@ svg {
   font-size: 24pt;
 }
 svg text {
-  font-family: "Arial";
+  font-family: "label";
   fill: #ffffff;
 }
 svg text.label {
   font-size: .5em;
 }
 svg text.active {
-  fill: #ad1aac;
+  fill: #ffffff;
   opacity: 1 !important;
 }
 svg text.hidden {
   opacity: 0;
+}
+.tick line {
+  stroke: #ffffff;
 }
 .tick text {
   font-size: .33em;
@@ -69,6 +131,9 @@ svg text.hidden {
   position: absolute;
   left: -55px;
   top: -0.25em;
+}
+.slider.car:after {
+  left: -135px;
 }
 .tooltip {
   color: #ffffff;

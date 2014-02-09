@@ -606,16 +606,13 @@ button.ui-button::-moz-focus-inner {
   position: relative;
   text-align: left;
 }
-
 .ui-slider .ui-slider-handle {
   position: absolute;
   z-index: 2;
   width: 1.2em;
   height: 1.2em;
   cursor: default;
-
 }
-
 .ui-slider .ui-slider-range {
   position: absolute;
   z-index: 1;
@@ -1511,6 +1508,6 @@ body .ui-tooltip {
   border-radius: 8px;
 }
 /*mine*/
-.locked{
-	background-color: red !important;
+.locked {
+  background-color: red !important;
 }

@@ -28,7 +28,7 @@ function savingsGraph( sel, _data ){
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
 	this.padding = {
-		left: 60,
+		left: 65,
 		right: 30,
 		top: 30,
 		bottom: 50
@@ -149,6 +149,14 @@ lgp.addAxes = function(){
 		d3.select(this).classed("hidden", check);
 	}); */
 	this.svg.append("g").attr({
+			class: "glow x axis",
+			transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
+		}).call(this.xA2).selectAll("text").attr("class","x tick")
+		.each(function(){
+			d3.select(this).classed("hidden", true);
+		});
+		
+	this.svg.append("g").attr({
 			class: "x axis",
 			transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
 		}).call(this.xA2).selectAll("text").attr("class","x tick")
@@ -162,6 +170,14 @@ lgp.addAxes = function(){
 		class: "y axis",
 		transform: "translate("+this.padding.left +","+0+")"
 	}).call(this.yA);
+	
+
+	
+/*	this.svg.select(".x.axis").selectAll(".tick.major").insert("circle").attr({
+		"class":"glow",
+		"r":5,
+		fill:"red"
+	})*/
 }
 lgp.updateAxes = function(){
 	this.yA.scale(this.ys);
@@ -269,7 +285,7 @@ lgp.buildSliders = function(){
 			$(this).find(".ui-slider-handle").text("$"+ui.value);
 			hideTip();
 		}
-	})
+	}).find("a").html("$"+_self.fvParams.weeklyContribution);
 	
 	$(".slider.rate").slider({
 		min: this.sliderP.rate.min,
@@ -285,7 +301,7 @@ lgp.buildSliders = function(){
 			$(this).find(".ui-slider-handle").text(ui.value+"%");
 			hideTip();
 		}
-	})
+	}).find("a").html((_self.fvParams.rate*100)+"%");
 	
 
 }

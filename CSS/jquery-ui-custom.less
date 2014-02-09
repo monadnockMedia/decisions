@@ -622,6 +622,8 @@ button.ui-button::-moz-focus-inner {
 @arrowWidth: .7em;
 @tipWidth: 3em;
 .tooltip{
+	font-family: label;
+	text-shadow: 1px 1px 2px black;
 	top:0;
 	z-index: 99;
 	line-height: @tipWidth;
@@ -633,7 +635,7 @@ button.ui-button::-moz-focus-inner {
 	background-color: @pink;
 	margin-left: -@tipWidth/2;
 	margin-top: -@tipWidth - @arrowHeight;
-	box-shadow: 0px 0px 12px @purple;
+	box-shadow: 0px 0px 12px @purple, inset .025em .25em .35em fade(@white,50);
 	&:after{
 		position: absolute;
 		left: @tipWidth/2 - (@arrowWidth);
@@ -645,6 +647,7 @@ button.ui-button::-moz-focus-inner {
 		border-left: @arrowWidth solid transparent;
 		border-right: @arrowWidth solid transparent;
 		border-top: @arrowHeight solid @pink;
+	
 		
 	}
 }
@@ -662,6 +665,7 @@ button.ui-button::-moz-focus-inner {
 	height: @handleHeight;
 	cursor: default;
 
+
 }
 @handleTop: (@handleHeight - @sliderHeight);
 .ui-slider-horizontal .ui-slider-handle {
@@ -674,6 +678,12 @@ button.ui-button::-moz-focus-inner {
 	margin-bottom: -.6em;
 }
 
+@ageHandleDim: 1.8em;
+.age>.ui-slider-handle{
+	width: @ageHandleDim;
+	height: @ageHandleDim;
+	margin-left: -@ageHandleDim/2;
+}
 
 .ui-slider .ui-slider-range {
 	position: absolute;
@@ -682,6 +692,8 @@ button.ui-button::-moz-focus-inner {
 	display: block;
 	border: 0;
 	background-position: 0 0;
+	background-color: fade(@blue, 50);
+	box-shadow: inset 0 0 .5em .125em @lightblue;
 }
 
 /* For IE8 - See #6727 */
@@ -828,7 +840,8 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-	font-family: Verdana,Arial,sans-serif;
+	font-family: label;
+
 	font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -838,12 +851,13 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-	font-family: Verdana,Arial,sans-serif;
+	font-family: label;
 	font-size: 1em;
 }
 .ui-widget-content {
-	border: 1px solid #ffffff;
-	background: #000000 url(images/ui-bg_flat_75_000000_40x100.png) 50% 50% repeat-x;
+	border: 1px solid white;
+	background: fade(@black,60);
+		box-shadow: 0 0 4px 1px black, inset 0 0 3px fade(@white,50) , inset 0 0 .5em .25em @blue;
 	color: #ffffff;
 }
 .ui-widget-content a {
@@ -865,9 +879,14 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
 	border: 1px solid #ffffff;
-	background: #10069F url(images/ui-bg_glass_75_10069F_1x400.png) 50% 50% repeat-x;
+	background-color: fade(@blue,70);
 	font-weight: normal;
-	color: #bbbbbb;
+	color: @white;
+	box-shadow:	inset 0 .5em .5em fade(@white,40), inset 0 -.5em .5em fade(@black,50)
+}
+
+.loz{
+	box-shadow:  inset 0 .5em .5em fade(@white,50) , inset 0 -.5em .5em fade(@black,50);
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -881,11 +900,13 @@ body .ui-tooltip {
 .ui-state-focus,
 .ui-widget-content .ui-state-focus,
 .ui-widget-header .ui-state-focus {
+	
 	border: 1px solid #ffffff;
 	outline: none;
-	box-shadow: 0 0 12px 0px @purple;
+	box-shadow: 0 0 12px 0px @white, inset 0 .5em .5em fade(@white,50), inset 0 -.5em .5em fade(@black,50);
 	font-weight: normal;
 	color: #ffffff;
+	text-shadow: 0 0 6px @pink,0 0 6px @pink, 0 0 2px @pink;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -906,7 +927,8 @@ body .ui-tooltip {
 	font-weight: normal;
 	//color: #ffffff;
 	color: fade(white,0);
-	box-shadow: 0 0 12px 3px @purple;
+	text-shadow: none;
+	box-shadow: 0 0 12px 3px @white,inset 0 .5em .5em fade(@white,40), inset 0 -.5em .5em fade(@black,50);
 	outline: none;
 }
 .ui-state-active a,
@@ -1162,29 +1184,30 @@ body .ui-tooltip {
 ----------------------------------*/
 
 /* Corner radius */
+@cornerRadius: .3em;
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-	border-top-left-radius: 4px;
+	border-top-left-radius: @cornerRadius;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-	border-top-right-radius: 4px;
+	border-top-right-radius: @cornerRadius;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-	border-bottom-left-radius: 4px;
+	border-bottom-left-radius: @cornerRadius;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-	border-bottom-right-radius: 4px;
+	border-bottom-right-radius: @cornerRadius;
 }
 
 /* Overlays */

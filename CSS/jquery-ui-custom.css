@@ -603,6 +603,8 @@ button.ui-button::-moz-focus-inner {
   text-align: left;
 }
 .tooltip {
+  font-family: label;
+  text-shadow: 1px 1px 2px black;
   top: 0;
   z-index: 99;
   line-height: 3em;
@@ -614,7 +616,7 @@ button.ui-button::-moz-focus-inner {
   background-color: #c5299b;
   margin-left: -1.5em;
   margin-top: -4em;
-  box-shadow: 0px 0px 12px #ad1aac;
+  box-shadow: 0px 0px 12px #ad1aac, inset 0.025em 0.25em 0.35em rgba(255, 255, 255, 0.5);
 }
 .tooltip:after {
   position: absolute;
@@ -649,6 +651,11 @@ button.ui-button::-moz-focus-inner {
   margin-left: 0;
   margin-bottom: -0.6em;
 }
+.age > .ui-slider-handle {
+  width: 1.8em;
+  height: 1.8em;
+  margin-left: -0.9em;
+}
 .ui-slider .ui-slider-range {
   position: absolute;
   z-index: 1;
@@ -656,6 +663,8 @@ button.ui-button::-moz-focus-inner {
   display: block;
   border: 0;
   background-position: 0 0;
+  background-color: rgba(16, 6, 159, 0.5);
+  box-shadow: inset 0 0 0.5em 0.125em #a4dbe8;
 }
 /* For IE8 - See #6727 */
 .ui-slider.ui-state-disabled .ui-slider-handle,
@@ -798,7 +807,7 @@ body .ui-tooltip {
 /* Component containers
 ----------------------------------*/
 .ui-widget {
-  font-family: Verdana, Arial, sans-serif;
+  font-family: label;
   font-size: 1.1em;
 }
 .ui-widget .ui-widget {
@@ -808,12 +817,13 @@ body .ui-tooltip {
 .ui-widget select,
 .ui-widget textarea,
 .ui-widget button {
-  font-family: Verdana, Arial, sans-serif;
+  font-family: label;
   font-size: 1em;
 }
 .ui-widget-content {
-  border: 1px solid #ffffff;
-  background: #000000 url(images/ui-bg_flat_75_000000_40x100.png) 50% 50% repeat-x;
+  border: 1px solid white;
+  background: rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 4px 1px #000000, inset 0 0 3px rgba(255, 255, 255, 0.5), inset 0 0 0.5em 0.25em #10069f;
   color: #ffffff;
 }
 .ui-widget-content a {
@@ -834,9 +844,13 @@ body .ui-tooltip {
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
   border: 1px solid #ffffff;
-  background: #10069f url(images/ui-bg_glass_75_10069F_1x400.png) 50% 50% repeat-x;
+  background-color: rgba(16, 6, 159, 0.7);
   font-weight: normal;
-  color: #bbbbbb;
+  color: #ffffff;
+  box-shadow: inset 0 0.5em 0.5em rgba(255, 255, 255, 0.4), inset 0 -0.5em 0.5em rgba(0, 0, 0, 0.5);
+}
+.loz {
+  box-shadow: inset 0 0.5em 0.5em rgba(255, 255, 255, 0.5), inset 0 -0.5em 0.5em rgba(0, 0, 0, 0.5);
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -852,9 +866,10 @@ body .ui-tooltip {
 .ui-widget-header .ui-state-focus {
   border: 1px solid #ffffff;
   outline: none;
-  box-shadow: 0 0 12px 0px #ad1aac;
+  box-shadow: 0 0 12px 0px #ffffff, inset 0 0.5em 0.5em rgba(255, 255, 255, 0.5), inset 0 -0.5em 0.5em rgba(0, 0, 0, 0.5);
   font-weight: normal;
   color: #ffffff;
+  text-shadow: 0 0 6px #c5299b, 0 0 6px #c5299b, 0 0 2px #c5299b;
 }
 .ui-state-hover a,
 .ui-state-hover a:hover,
@@ -874,7 +889,8 @@ body .ui-tooltip {
   background: #0c065c url(images/ui-bg_glass_65_0c065c_1x400.png) 50% 50% repeat-x;
   font-weight: normal;
   color: rgba(255, 255, 255, 0);
-  box-shadow: 0 0 12px 3px #ad1aac;
+  text-shadow: none;
+  box-shadow: 0 0 12px 3px #ffffff, inset 0 0.5em 0.5em rgba(255, 255, 255, 0.4), inset 0 -0.5em 0.5em rgba(0, 0, 0, 0.5);
   outline: none;
 }
 .ui-state-active a,
@@ -1479,25 +1495,25 @@ body .ui-tooltip {
 .ui-corner-top,
 .ui-corner-left,
 .ui-corner-tl {
-  border-top-left-radius: 4px;
+  border-top-left-radius: 0.3em;
 }
 .ui-corner-all,
 .ui-corner-top,
 .ui-corner-right,
 .ui-corner-tr {
-  border-top-right-radius: 4px;
+  border-top-right-radius: 0.3em;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-left,
 .ui-corner-bl {
-  border-bottom-left-radius: 4px;
+  border-bottom-left-radius: 0.3em;
 }
 .ui-corner-all,
 .ui-corner-bottom,
 .ui-corner-right,
 .ui-corner-br {
-  border-bottom-right-radius: 4px;
+  border-bottom-right-radius: 0.3em;
 }
 /* Overlays */
 .ui-widget-overlay {

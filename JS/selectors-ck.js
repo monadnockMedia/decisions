@@ -1,1 +1,0 @@
-var fvd,lg,toggle=!1;$(function(){makeGraph();$("body").click(function(){toggle=!toggle;$("#chart").html(" ");makeGraph()})});var makeGraph=function(){window.lg=toggle?new carGraph("#chart",fvd):new savingsGraph("#chart",fvd)};

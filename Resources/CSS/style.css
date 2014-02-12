@@ -126,11 +126,35 @@ svg text.hidden {
   font-family: Arial;
   margin-top: 1.5em;
 }
-.slider:after {
+.slider:before {
   content: attr(title);
   position: absolute;
-  left: -55px;
+  margin-left: -120px;
   top: -0.25em;
+  font-size: 1.3em;
+  text-shadow: 2px 3px 3px black;
+}
+.buttons:before {
+  position: absolute;
+  width: 120px;
+  line-height: 2em;
+  content: attr(title);
+  margin-left: -120px;
+  margin-top: .3em;
+  font-family: label;
+  color: white;
+  font-size: 1.1em;
+  font-size: 1.3em;
+  text-shadow: 2px 3px 3px black;
+}
+.uiLabel {
+  font-size: 1.3em;
+  text-shadow: 2px 3px 3px black;
+}
+.carButton {
+  box-sizing: border-box;
+  width: 32%;
+  margin: 1%;
 }
 .slider.car:after {
   left: -135px;

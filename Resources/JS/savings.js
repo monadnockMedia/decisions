@@ -192,7 +192,7 @@ lgp.buildSliders = function(){
 	});
 	this.container.append("div").attr({
 		"class": "slider contribution",
-		title: "$"
+		title: "$/month"
 		
 		});
 	this.container.append("div").attr(	{

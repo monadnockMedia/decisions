@@ -871,6 +871,10 @@ body .ui-tooltip {
   color: #ffffff;
   text-shadow: 0 0 6px #c5299b, 0 0 6px #c5299b, 0 0 2px #c5299b;
 }
+.car-selected {
+  box-shadow: 0 0 12px 0px #c5299b, inset 0 0.5em 0.5em rgba(255, 255, 255, 0.5), inset 0 -0.5em 0.5em rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 6px #c5299b, 0 0 6px #c5299b, 0 0 2px #c5299b;
+}
 .ui-state-hover a,
 .ui-state-hover a:hover,
 .ui-state-hover a:link,

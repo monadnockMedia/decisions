@@ -5,7 +5,7 @@ $(function(){
 	makeGraph();
 //	window.lg = new savingsGraph("#chart",fvd);
 	//window.lg = new carGraph("#chart",fvd);
-	$("body").click(function(){
+	$("#switch").click(function(){
 		toggle = !toggle;
 		$("#chart").html(" ")
 		makeGraph();

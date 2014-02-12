@@ -9,14 +9,14 @@ function carGraph( sel, _data ){
 		contribution : {min: 200, max: 1000}
 	}
 	this.cars = {
-		"economy":15000,
-		'midsized':25000,
-		'luxury':50000
+		"Economy":15000,
+		'Midsized':25000,
+		'Luxury':50000
 	}
 	this.amParams = {
 		contrib: 450,
 		rate: 2,
-		balance: this.cars.midsized
+		balance: this.cars.Midsized
 	}
 	this.amortize();
 	//set up viewport size, etc.
@@ -24,7 +24,7 @@ function carGraph( sel, _data ){
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
 	this.padding = {
-		left: 60,
+		left: 70,
 		right: 30,
 		top: 30,
 		bottom: 50
@@ -124,10 +124,10 @@ cgP.addAxes = function(){
 }
 cgP.updateAxes = function(){
 	this.yA.scale(this.ys);
-	this.svg.select(".y.axis").call(this.yA);
+	this.svg.select(".y.axis").transition().call(this.yA);
 	
 	this.xA.scale(this.xs);
-	this.svg.select(".x.axis").call(this.xA);
+	this.svg.select(".x.axis").transition().call(this.xA);
 }
 cgP.amortize = function(){
 	with (this.amParams){
@@ -188,8 +188,10 @@ cgP.drawLines = function(){
 	var total = this.data.map(function(d){return {date: d.date, val: d.totalPaid}});
 	
 	areaData = prin.concat(total.reverse());
-	this.area.datum(areaData).transition().style("opacity",0).attr("d", self.lineFunctions.area).transition().style("opacity",1);
-	this.total.datum(this.data).transition().attr("d", self.lineFunctions.total);
+	this.area.datum(areaData)
+		.transition().duration(150).style("opacity",0).attr("d", self.lineFunctions.area)
+		.transition().duration(1500).style("opacity",1);
+	this.total.datum(this.data).transition().delay(170).attr("d", self.lineFunctions.total);
 //	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
 	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance)
 }
@@ -197,8 +199,35 @@ cgP.drawLines = function(){
 
 
 cgP.buildSliders = function(){
+	this.buttonParams = [
+	{name: "Economy", price:15000, icon:"blank.svg"},
+	{name: "Midsized", price:25000, icon:"blank.svg"},
+	{name: "Luxury", price:50000, icon:"blank.svg"}]
+	
+	
+	
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
-
+	this.container.append("div").attr({
+		"class":"buttons",
+		"title":"Car Type"})
+		.selectAll("div").data(this.buttonParams).enter().append("div")
+		.attr({
+			"class": function(d){return "carButton "+d.name},
+			"type":function(d){return d.name}
+			}).html(function(d){return d.name});
+	
+	$(".carButton").button().click(function( event ) {
+		var type = $(this).attr("type");
+		console.log(type);
+		$(".carButton").each(function(){
+			check = $(this).attr("type") == type;
+			$(this).toggleClass("car-selected", check);
+		});
+		self.amParams.balance = self.cars[type];
+		console.log(self.amParams);
+		self.redraw()
+	});
+	
 	
 	this.contributionSlider = this.container.append("div").attr({
 		"class": "slider contribution car",
@@ -211,7 +240,11 @@ cgP.buildSliders = function(){
 			});
 	
 	$(".slider").css({
-		"margin-left": this.padding.left*2.5,
+		"margin-left": this.padding.left*2,
+		"margin-right": this.padding.right
+	});
+	$(".buttons").css({
+		"margin-left": this.padding.left*2,
 		"margin-right": this.padding.right
 	});
 	
@@ -245,13 +278,14 @@ cgP.buildSliders = function(){
 				"top": $(ui.handle).offset().top
 			}).html("$"+ui.value)
 			//setTimeout(moveTip(ui), 15);
-			self.amParams.contrib = ui.value;
+			
 			
 		},
 		stop: function(ev,ui){
 			$(this).find(".ui-slider-handle").text("$"+ui.value);
 			hideTip();
 			self.redraw();
+			self.amParams.contrib = ui.value;
 		}
 	}).find("a").html("$"+self.amParams.contrib);
 	

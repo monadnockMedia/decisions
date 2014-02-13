@@ -2,3 +2,7 @@
 *.tmproj
 
 dec_calc.nw
+
+.nw
+
+*.nw

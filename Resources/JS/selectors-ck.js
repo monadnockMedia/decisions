@@ -1,1 +1,1 @@
-var fvd,lg,toggle=!0;$(function(){makeGraph();$(".switch").click(function(){toggle=!toggle;$("#chart").html(" ");makeGraph()})});var makeGraph=function(){window.lg=toggle?new carGraph("#chart",fvd):new savingsGraph("#chart",fvd)};
+var fvd,lg,toggle=!0;$(function(){makeGraph();$("#switch").click(function(){toggle=!toggle;$("#chart").html(" ");makeGraph()});var e="./",t=require("fs");t.watch(e,[],function(){location&&location.reload(!1)})});var makeGraph=function(){window.lg=toggle?new carGraph("#chart",fvd):new savingsGraph("#chart",fvd)};

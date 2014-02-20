@@ -4,6 +4,7 @@ function carGraph( sel, _data ){
 		"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
 	];
 	this.data = null;
+	this.axesPad = 10;
 	this.sliderP = {
 		rate : {min: 1, max: 21},
 		contribution : {min: 200, max: 1000}
@@ -15,8 +16,9 @@ function carGraph( sel, _data ){
 	}
 	this.amParams = {
 		contrib: 450,
-		rate: 2,
-		balance: this.cars.Midsized
+		rate: 20,
+	//	balance: this.cars.Midsized
+	balance: 10000
 	}
 	this.amortize();
 	//set up viewport size, etc.
@@ -39,7 +41,7 @@ function carGraph( sel, _data ){
 	
 		
 	this.setAxes();
-	
+
 	//add an svg element to draw the graph in
 	this.svg = this.container.append("svg").attr({
 		width: this.w,
@@ -63,7 +65,10 @@ function carGraph( sel, _data ){
 		.attr("clip-path", "url(#clip)").attr("class","chartBody")
 	
 	this.addAxes();
+	this.addBars();
 	this.addLines();
+	this.addLegend();
+	this.buildSliders();
 	
 }
 
@@ -71,25 +76,41 @@ cgP = carGraph.prototype;
 
 cgP.setScales = function(){
 	//set up scales for each axis / datum
-/*	this.xs = d3.time.scale()
+/*	this.scales.x = d3.time.scale()
 		.range([this.padding.left, this.innerRight])
 		.domain(d3.extent(this.data, function(d){return +d.date}));*/
-		
-	this.xs = d3.time.scale()
-		.range([this.padding.left, this.innerRight])
+	this.scales = {};
+	this.scales.range = {};
+	this.scales.range.x = [this.padding.left, this.innerRight];
+	this.scales.range.y = [ this.h - this.padding.bottom, this.padding.top];
+	
+	this.scales.x = d3.time.scale()
+		.range(this.scales.range.x)
 		.domain(d3.extent(this.data, function(d){return +d.date}));
 		
-	this.ys = d3.scale.linear()
-		.range([ this.h - this.padding.bottom, this.padding.top]) //svg origin is top-left
-		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+	this.scales.y = d3.scale.linear()
+		.range(this.scales.range.y) //svg origin is top-left
+		.domain([0,this.cars.Luxury]);
+	//	.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+		
+		this.scales.iy = d3.scale.linear()
+			.range(this.scales.range.y) //svg origin is top-left
+			.domain([0,self.amParams.contrib]);
+			
+	this.scales.box = d3.scale.ordinal()
+		.rangeRoundBands(this.scales.range.x, 0)
+		.domain(d3.range(this.data.length))
+		
+	
 }
 
 cgP.updateScales = function(){
-	this.xs
+	this.scales.x
 		.domain(d3.extent(this.data, function(d){return +d.date}));
 		
-	this.ys
-		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+	this.scales.y
+	.domain([0,this.cars.Luxury]);
+		//.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
 }
 
 cgP.setAxes = function(){
@@ -98,35 +119,34 @@ cgP.setAxes = function(){
 
 	
 	this.xA = d3.svg.axis()
-		.scale(this.xs)
+		.scale(this.scales.x)
 		.orient("bottom")
-		.ticks(10)
+		.ticks(this.data.length)
 		.tickFormat(function(t){return t.getUTCFullYear()});
 		
 	this.yA = d3.svg.axis()
-		.scale(this.ys)
+		.scale(this.scales.y)
 		.orient('left')
 		.tickFormat(function(t){return finance.format(t, 'USD')})
 }
 cgP.addAxes = function(){
 
-	this.svg.append("g").attr({
+/*	this.svg.append("g").attr({
 			class: "x axis",
-			transform: "translate(0,"+(this.h - this.padding.bottom) +")", //transform from top-left to bottom-left (minus padding)
-		}).call(this.xA)
+			transform: "translate(0,"+(this.h - this.padding.bottom + this.axesPad ) +")", //transform from top-left to bottom-left (minus padding)
+		}).call(this.xA) */
 	
 		
-		
 	this.svg.append("g").attr({
-		class: "y axis",
-		transform: "translate("+(this.padding.left-2) +","+0+")"
+		class: "y axis lifted",
+		transform: "translate("+(this.padding.left-this.axesPad ) +","+0+")"
 	}).call(this.yA)
 }
 cgP.updateAxes = function(){
-	this.yA.scale(this.ys);
+	this.yA.scale(this.scales.y);
 	this.svg.select(".y.axis").transition().call(this.yA);
 	
-	this.xA.scale(this.xs);
+	this.xA.scale(this.scales.x);
 	this.svg.select(".x.axis").transition().call(this.xA);
 }
 cgP.amortize = function(){
@@ -156,21 +176,21 @@ cgP.addLines = function(){
 	this.lineFunctions = {
 	
 		interest : d3.svg.line()
-			.x(function(d){ return self.xs(d.date) })
-			.y(function(d){ return self.ys(d.interest)}),
+			.x(function(d){ return self.scales.x(d.date) })
+			.y(function(d){ return self.scales.y(d.interest)}),
 		
 		balance : d3.svg.line()
-			.x(function(d){ return self.xs(d.date) })
-			.y(function(d){ return self.ys(d.principle)}),
+			.x(function(d){ return self.scales.x(d.date) })
+			.y(function(d){ return self.scales.y(d.principle)}),
 		
 		total : d3.svg.line()
-			.x(function(d){ return self.xs(d.date) })
-			.y(function(d){ return self.ys(d.totalPaid)}),
+			.x(function(d){ return self.scales.x(d.date) })
+			.y(function(d){ return self.scales.y(d.totalPaid)}),
 		
 		
 		area : d3.svg.line()
-			.x(function(d){ return self.xs(d.date) })
-			.y(function(d){ return self.ys(d.val)}),
+			.x(function(d){ return self.scales.x(d.date) })
+			.y(function(d){ return self.scales.y(d.val)}),
 		}
 
 	this.lineGroup = this.svg.append("g").attr("class","lineGroup");
@@ -178,9 +198,9 @@ cgP.addLines = function(){
 	this.total = this.lineGroup.append("path").attr("class","line total");
 	this.interest = this.lineGroup.append("path").attr("class","line interest");
 	
-	this.balance = this.lineGroup.append("path").attr("class","line balance");
+	this.balance = this.lineGroup.append("path").attr("class","line balance lifted");
 	this.drawLines();
-	this.buildSliders();
+	
 }
 
 cgP.drawLines = function(){
@@ -197,6 +217,128 @@ cgP.drawLines = function(){
 }
 
 
+
+cgP.addBars = function(){
+	this.barGroup = this.svg.append("g").attr("class","barGroup");
+	
+	boxWidth = 6;
+	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
+		.attr("class","bar")
+		/*.attr("transform", function(d){return "translate("+(self.scales.x(d.date)  - boxWidth/2)+",0)"})*/
+	
+		
+	lines = false;
+	bars = true;
+	if (!lines && bars)
+	{
+		
+	
+	
+	this.bar.append("rect")
+		.attr({
+			x: function(d,i){return self.scales.box(i)},
+			y: function(d){return self.scales.iy( d.paymentToPrinciple )},
+			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToPrinciple)},
+			width: this.scales.box.rangeBand()-4,
+			"class": "principle",
+		})
+		
+	this.bar.append("rect")
+		.attr({
+			x: function(d,i){return self.scales.box(i)},
+			y: function(d){return self.scales.iy(d.payment) },
+			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToInterest)-1},
+			width: this.scales.box.rangeBand()-4,
+			"class": "interest"
+		}) 
+
+	}
+	
+	if (!lines && !bars)
+	{
+		
+	
+	
+	this.bar.append("rect")
+		.attr({
+			x: function(d,i){return self.scales.box(i)},
+			y: function(d){return self.scales.y( d.cumToPrinciple )},
+			height: function(d){return (self.h - self.padding.bottom ) - self.scales.y(d.cumToPrinciple)},
+			width: this.scales.box.rangeBand()-4,
+			"class": "principle"
+		})
+		
+	this.bar.append("rect")
+		.attr({
+			x: function(d,i){return self.scales.box(i)},
+			y: function(d){return self.scales.y(d.totalPaid) },
+			height: function(d){return (self.h - self.padding.bottom ) - self.scales.y(d.interest)-1},
+			width: this.scales.box.rangeBand()-4,
+			"class": "interest"
+		}) 
+
+	}
+	this.bar.append("text")
+		.attr({
+			x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
+			y: self.h - self.padding.bottom + 30,
+			"text-anchor": "middle",
+			"class":"year"
+		}).text(function(d){  
+			var ret = null;
+			if(+d.date.getMonth() % 12 == 0){
+				ret = d.date.getFullYear();
+			}
+			return ret;
+			})
+			
+	this.bar.append("text")
+		.attr({
+			x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
+			y: self.h - self.padding.bottom + 15,
+			"text-anchor": "middle",
+			"class" : "month"
+		}).text(function(d){  
+			
+		
+				ret = self.months[+d.date.getMonth()];
+			
+			return ret;
+			})
+	if (lines)
+	{
+	this.pLine = this.bar.append("line").attr("class","principle")
+		.attr({
+			x1: 0, 
+			y1: self.h - self.padding.bottom,
+			x2: 0, 
+			y2: function(d){return self.scales.iy(d.paymentToPrinciple)}
+			
+		})
+		
+		this.iLine = this.bar.append("line")
+			.attr({
+				x1: 0, 
+				y1: function(d){return self.scales.iy(d.paymentToPrinciple)},
+				x2: 0, 
+				y2: function(d){return self.scales.iy(d.payment)},
+				fill: "#f00",
+				class:"interest"
+
+			})}
+}		
+
+cgP.addLegend = function(){
+	
+	this.legend = this.container.append("div").attr("id","legend");
+	
+	this.legend.append("div").attr("class","key payment interest");
+	this.legend.append("p").text("Payment to Interest")
+	
+	this.legend.append("div").attr("class","key principle interest");
+	this.legend.append("p").text("Payment to Principle")
+	
+}
 
 cgP.buildSliders = function(){
 	this.buttonParams = [

@@ -38,11 +38,12 @@ body {
 }
 #chart {
   width: 800px;
-  height: 550px;
+  height: 450px;
   background-color: lightsteelblue;
   margin-right: auto;
   margin-left: auto;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(16, 6, 159, 0.5);
+  box-shadow: inset 0 -20px 200px #000000;
 }
 .axis path {
   stroke: #ffffff;
@@ -55,6 +56,9 @@ body {
 }
 .glow domain {
   visibility: hiddne;
+}
+.bevel {
+  filter: url(#Bevel2);
 }
 svg .bar {
   stroke: #ad1aac;
@@ -79,14 +83,19 @@ path {
   fill: rgba(197, 41, 155, 0.5);
   fill: url(#diagonalHatch);
   stroke: none;
+  visibility: hidden;
 }
 .line.total {
   stroke-width: 3px;
   stroke: #10069f;
+  visibility: hidden;
 }
 .line.balance {
-  stroke: #ad1aac;
+  stroke: white;
   stroke-width: 3px;
+}
+.lifted {
+  filter: url(#drop);
 }
 #diagonalHatch > path {
   stroke: rgba(164, 219, 232, 0.6);
@@ -162,4 +171,63 @@ svg text.hidden {
 .tooltip {
   color: #ffffff;
   font-family: Arial;
+}
+.payment {
+  fill: #c5299b;
+  stroke: none;
+}
+.interest {
+  fill: url(#diagonalHatch);
+  stroke: none;
+  stroke: #a4dbe8;
+  fill: rgba(164, 219, 232, 0.5);
+  background-color: rgba(164, 219, 232, 0.5);
+  border: 1px solid #a4dbe8;
+}
+.principle {
+  stroke: none;
+  stroke: #c5299b;
+  fill: rgba(197, 41, 155, 0.5);
+  background-color: rgba(197, 41, 155, 0.5);
+  border: 1px solid #c5299b;
+}
+.year {
+  font-size: 11pt;
+  fill: white ;
+  stroke: none;
+}
+.month {
+  font-size: 7pt;
+  fill: white ;
+  stroke: none;
+}
+.bar {
+  stroke: none;
+}
+line.principle {
+  stroke-width: 6px;
+}
+#legend {
+  background-color: rgba(16, 6, 159, 0.5);
+  padding: .25em;
+  width: 100%;
+  box-shadow: inset 0 -5px 20px #000000;
+  font-family: label;
+  color: white;
+}
+#legend .key {
+  margin-left: 1em;
+  margin-right: .25em;
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+}
+#legend .key.payment {
+  fill: red;
+}
+#legend p {
+  margin: 0;
+  display: inline-block;
+  line-height: 1.25em;
+  margin-right: .5em;
 }

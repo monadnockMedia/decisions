@@ -94,6 +94,13 @@ path {
   stroke: white;
   stroke-width: 3px;
 }
+circle.balance {
+  fill: white;
+  stroke: white;
+}
+.linelabel {
+  font-size: .5em;
+}
 .lifted {
   filter: url(#drop);
 }
@@ -208,6 +215,7 @@ line.principle {
   stroke-width: 6px;
 }
 #legend {
+  -webkit-box-sizing: border-box;
   background-color: rgba(16, 6, 159, 0.5);
   padding: .25em;
   width: 100%;

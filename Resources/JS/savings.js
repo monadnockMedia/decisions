@@ -29,7 +29,7 @@ function savingsGraph( sel, _data ){
 	this.h = this.stripPx(this.container.style("height"));
 	this.padding = {
 		left: 65,
-		right: 30,
+		right: 40,
 		top: 30,
 		bottom: 50
 	}
@@ -277,7 +277,10 @@ lgp.buildSliders = function(){
 		max: this.sliderP.contribution.max,
 		value: _self.fvParams.weeklyContribution,
 		slide: function(ev, ui){
-			moveTip(ui, "$"+ui.value);
+			$(".tooltip").css({
+				"left": _self.sliderScales.contribution(ui.value),
+				"top": $(ui.handle).offset().top
+			}).html("$"+ui.value)
 			_self.fvParams.weeklyContribution = ui.value;
 			_self.redraw();
 		},
@@ -293,7 +296,11 @@ lgp.buildSliders = function(){
 		step: 0.1,
 		value: _self.fvParams.rate*100,
 		slide: function(ev, ui){
-			moveTip(ui, ui.value+"%");
+			$(".tooltip").css({
+				"left": _self.sliderScales.rate(ui.value),
+				"top": $(ui.handle).offset().top
+			}).html(ui.value+"%")
+			
 			_self.fvParams.rate = ui.value/100;
 			_self.redraw();
 		},
@@ -303,6 +310,20 @@ lgp.buildSliders = function(){
 		}
 	}).find("a").html((_self.fvParams.rate*100)+"%");
 	
+
+	this.sliderScales = {};
+	contOff = $(".slider.contribution").offset();
+	contW = $(".slider.contribution").width();
+	this.sliderScales.contribution = d3.scale.linear()
+		.range([contOff.left,contOff.left+contW ])
+		.domain([ _self.sliderP.contribution.min , _self.sliderP.contribution.max]);
+	
+	rateOff = $(".slider.rate").offset();
+	rateW = $(".slider.rate").width();
+	this.sliderScales.rate = d3.scale.linear()
+		.range([rateOff.left,rateOff.left+rateW ])
+		.domain([_self.sliderP.rate.min,_self.sliderP.rate.max]);
+
 
 }
 
@@ -383,7 +404,7 @@ lgp.drawLines = function(){
 	this.dotLabel.attr({
 		x: datumX,
 		y: datumY-this.dotSize-2,
-	}).text(finance.format(this.lastDatum.FV, 'USD'))
+	}).text(finance.format(this.lastDatum.FV.toFixed(0), 'USD'))
 	
 	this.xBar.attr({
 		x1: datumX,

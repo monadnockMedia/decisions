@@ -118,6 +118,17 @@ path{
 	}
 }
 
+circle{
+	&.balance{
+		fill: white;
+		stroke:white;
+	}
+}
+
+.linelabel{
+	font-size: .5em;
+}
+
 .lifted{
 	filter: url(#drop);
 }
@@ -255,6 +266,7 @@ line.principle{
 }
 
 #legend{
+	-webkit-box-sizing: border-box;
 	.chartBG(5);
 	padding: .25em;
 	width: 100%;

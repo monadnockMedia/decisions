@@ -199,6 +199,14 @@ cgP.addLines = function(){
 	this.interest = this.lineGroup.append("path").attr("class","line interest");
 	
 	this.balance = this.lineGroup.append("path").attr("class","line balance lifted");
+	this.lineLabel = this.lineGroup.append("g").attr("class","lifted");
+	this.lineNode = this.lineLabel.append("circle").attr({
+		class:"balance"})
+		
+	this.lineText = this.lineLabel.append("text").attr({
+		class: "linelabel "
+	}).text("Balance")
+	
 	this.drawLines();
 	
 }
@@ -213,7 +221,20 @@ cgP.drawLines = function(){
 		.transition().duration(1500).style("opacity",1);
 	this.total.datum(this.data).transition().delay(170).attr("d", self.lineFunctions.total);
 //	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
-	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance)
+	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance);
+	
+
+	
+	this.lineNode.attr({
+		r: 6,
+		cx: self.scales.box(0),
+		cy: self.scales.y(self.data[0].principle)
+	})
+	
+	this.lineText.attr({
+		transform: "translate("+(self.scales.box(0)+12)+","+ (self.scales.y(self.data[0].principle)-8)+") rotate(-45)",
+		
+	})
 }
 
 
@@ -224,7 +245,7 @@ cgP.addBars = function(){
 	boxWidth = 6;
 	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
 		.attr("class","bar")
-		/*.attr("transform", function(d){return "translate("+(self.scales.x(d.date)  - boxWidth/2)+",0)"})*/
+		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+",0)"})
 	
 		
 	lines = false;
@@ -236,7 +257,7 @@ cgP.addBars = function(){
 	
 	this.bar.append("rect")
 		.attr({
-			x: function(d,i){return self.scales.box(i)},
+		//	x: function(d,i){return self.scales.box(i)},
 			y: function(d){return self.scales.iy( d.paymentToPrinciple )},
 			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToPrinciple)},
 			width: this.scales.box.rangeBand()-4,
@@ -245,7 +266,7 @@ cgP.addBars = function(){
 		
 	this.bar.append("rect")
 		.attr({
-			x: function(d,i){return self.scales.box(i)},
+		//	x: function(d,i){return self.scales.box(i)},
 			y: function(d){return self.scales.iy(d.payment) },
 			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToInterest)-1},
 			width: this.scales.box.rangeBand()-4,
@@ -278,15 +299,17 @@ cgP.addBars = function(){
 		}) 
 
 	}
+	
 	this.bar.append("text")
 		.attr({
-			x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
-			y: self.h - self.padding.bottom + 30,
+			x:(self.scales.box.rangeBand()/2),
+	
+			y: self.h - self.padding.bottom + 18,
 			"text-anchor": "middle",
 			"class":"year"
-		}).text(function(d){  
+		}).text(function(d, i){  
 			var ret = null;
-			if(+d.date.getMonth() % 12 == 0){
+			if(+d.date.getMonth() % 12 == 0 || i == 0){
 				ret = d.date.getFullYear();
 			}
 			return ret;
@@ -294,17 +317,19 @@ cgP.addBars = function(){
 			
 	this.bar.append("text")
 		.attr({
-			x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
-			y: self.h - self.padding.bottom + 15,
+			
+		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
+			
+		//	y: self.h - self.padding.bottom + 15,
+			transform: "translate(4,"+(self.h - self.padding.bottom - 15) +") rotate(90)",
 			"text-anchor": "middle",
 			"class" : "month"
+			
 		}).text(function(d){  
-			
-		
-				ret = self.months[+d.date.getMonth()];
-			
+			ret = self.months[+d.date.getMonth()];
 			return ret;
-			})
+		})
+		
 	if (lines)
 	{
 	this.pLine = this.bar.append("line").attr("class","principle")

@@ -63,6 +63,9 @@ body {
 svg .bar {
   stroke: #ad1aac;
 }
+.barBox {
+  fill: rgba(173, 26, 172, 0.2);
+}
 path {
   shape-rendering: crispEdges;
 }

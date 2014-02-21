@@ -56,15 +56,19 @@ function savingsGraph( sel, _data ){
 		.attr("id","clip")
 		.append("svg:rect")
 		.attr({
-			x: this.padding.left + clipGutter,
+			x: this.padding.left,
 			y: 0,
-			width: this.innerWidth - clipGutter,
-			height: this.innerHeight
+			width: this.w,
+			height: this.h
 		})
 	
+		//add bars	
+			this.xBar = this.svg.append("line").attr("class","x bar").attr("stroke-dasharray","2,4");
+			this.yBar = this.svg.append("line").attr("class","y bar").attr("stroke-dasharray","2,4");
+			this.barBox = this.svg.append("rect").attr("class","barBox");
 	//and a group for the chart's lines, masked by the clipPath
 	this.chartBody = this.svg.append("g")
-		.attr("clip-path", "url(#clip)").attr("class","chartBody")
+		.attr("clip-path", "url(#clip)").attr("class","lifted chartBody")
 	
 	this.addAxes();
 
@@ -73,13 +77,16 @@ function savingsGraph( sel, _data ){
 	this.line = d3.svg.line()
 		.x(function(d){return _self.xs(d.WEEK)})
 		.y(function(d){return _self.ys(d.FV)});
+
+		
 	//and the path
-	this.path = this.svg.append("path").attr("class","line selection");
-	this.proj = this.svg.append("path").attr("class","line projection").attr("stroke-dasharray","5,5");
-	this.xBar = this.svg.append("line").attr("class","x bar").attr("stroke-dasharray","2,4");;
-	this.yBar = this.svg.append("line").attr("class","y bar").attr("stroke-dasharray","2,4");;
-	this.dot = this.svg.append("circle").attr("class","datum").attr("r",this.dotSize);
-	this.dotLabel = this.svg.append("text").attr("class","label dot").attr("text-anchor","middle");
+	this.path = this.chartBody.append("path").attr("class","line selection");
+	this.proj = this.chartBody.append("path").attr("class","line projection").attr("stroke-dasharray","5,5");
+	
+	
+	
+	this.dot = this.chartBody.append("circle").attr("class","datum").attr("r",this.dotSize);
+	this.dotLabel = this.chartBody.append("text").attr("class","label dot").attr("text-anchor","middle");
 	//add slider range
 	this.buildSliders();
 //	$(".slider>.ui-slider-handle:first").addClass("locked").mousedown(function(e){e.preventDefault()}) //lock the leftmost handle for now
@@ -211,54 +218,9 @@ lgp.buildSliders = function(){
 		start: function(ev,ui){
 			moveTip(ui);
 			showTip();
-			$(this)
+		
 		}
 	});
-	$(".slider.age").slider({
-		range: true,
-		min: 0,
-		max: _self.datalength,
-		values: [0,_self.datalength],
-		start: null,
-		slide: function(ev, ui){
-				
-			span = Math.ceil((ui.values[1] - ui.values[0])/52);  //span is in years, scale is in months.
-			
-			if($(ui.handle).hasClass("locked")){
-				return false;
-			}
-			else if( span <= maxSpan){ //span is 10 years or less
-				console.log("minSpan");
-				hI = +( ui.value == ui.values[1]  ); //index of this handle, +false == 0;
-				hT = +!hI; //index of other handle, +!false = +true = 1
-				console.log(ui.values[hT] != _self.datalength);
-				
-				if(ui.values[hT] == 0 || ui.values[hT] >= _self.datalength){
-					return false;
-				}else{
-					var newVal = (hI == 0) ? ui.value+maxSpan*52 :ui.value-maxSpan*52 ;
-					$(this).slider('values',hT,newVal);
-				}
-				
-			}
-			
-				
-			
-			_self.weekRange.min = ui.values[0];
-			_self.weekRange.max = ui.values[1];
-			_self.redraw();
-			return true;
-		}
-	})
-	var moveTip = function(_ui,s){
-			var pos = $(_ui.handle).offset();
-			var offset = $(_ui.handle).width() /2;
-			console.log(offset);
-			$(".tooltip").css({
-				top: pos.top,
-				left: +pos.left+offset
-			}).html(s)
-	}
 	var hideTip = function(){
 		$(".tooltip").animate({
 			opacity: 0
@@ -270,6 +232,60 @@ lgp.buildSliders = function(){
 			opacity: 1
 		})
 	}
+	$(".slider.age").slider({
+		range: true,
+		min: 0,
+		max: _self.datalength,
+		values: [0,_self.datalength],
+		
+		slide: function(ev, ui){
+				
+			span = Math.ceil((ui.values[1] - ui.values[0])/52);  //span is in years, scale is in months.
+			
+			if($(ui.handle).hasClass("locked")){
+				return false;
+			}
+			else if( span <= maxSpan){ //span is 10 years or less
+				hI = +( ui.value == ui.values[1]  ); //index of this handle, +false == 0;
+				hT = +!hI; //index of other handle, +!false = +true = 1
+				if(ui.values[hT] == 0 || ui.values[hT] >= _self.datalength){
+					return false;
+				}else{
+					var newVal = (hI == 0) ? ui.value+maxSpan*52 :ui.value-maxSpan*52 ;
+					$(this).slider('values',hT,newVal);
+				}
+				
+			}
+			
+			$(".tooltip").css({
+				"left": _self.sliderScales.age(ui.value),
+				"top": $(ui.handle).offset().top
+			}).html( _self.data[ui.value].AGE )
+			
+				
+			
+			_self.weekRange.min = ui.values[0];
+			_self.weekRange.max = ui.values[1];
+			_self.redraw();
+			return true;
+		},
+		stop: function(ev,ui){
+			$(ui.handle).html(_self.data[ui.value].AGE)
+			hideTip();
+		}
+	}).find("a:first").html("15");
+	$(".slider.age").find("a:last").html("65");
+	
+	var moveTip = function(_ui,s){
+			var pos = $(_ui.handle).offset();
+			var offset = $(_ui.handle).width() /2;
+			console.log(offset);
+			$(".tooltip").css({
+				top: pos.top,
+				left: +pos.left+offset
+			}).html(s)
+	}
+
 
 
 	$(".slider.contribution").slider({
@@ -323,6 +339,12 @@ lgp.buildSliders = function(){
 	this.sliderScales.rate = d3.scale.linear()
 		.range([rateOff.left,rateOff.left+rateW ])
 		.domain([_self.sliderP.rate.min,_self.sliderP.rate.max]);
+	
+	ageOff = $(".slider.age").offset();
+	ageW = $(".slider.age").width();
+	this.sliderScales.age = d3.scale.linear()
+		.range([ageOff.left,ageOff.left+rateW ])
+		.domain([0,_self.datalength]);
 
 
 }
@@ -338,13 +360,13 @@ lgp.redraw = function(){
 	this.firstDatum = this.vData[0];
 	_self.updateScales();
 	
-	this.svg.selectAll(".x.tick").each(function(){
+/*	this.svg.selectAll(".x.tick").each(function(){
 		checkLast = (this.textContent) == _self.lastDatum.AGE;
 		checkFirst = (this.textContent) == _self.firstDatum.AGE;
 		d3.select(this).classed("active", (checkLast || checkFirst )); //its active if either are true
 		d3.select(this).classed("last", checkLast)
 		d3.select(this).classed("first", checkFirst);
-	});
+	});*/
 	
 
 	
@@ -418,6 +440,13 @@ lgp.drawLines = function(){
 		y1: datumY,
 		x2: datumX,
 		y2: datumY
+	})
+	
+	this.barBox.attr({
+		y: datumY,
+		x: _self.padding.left,
+		width: datumX - _self.padding.left,
+		height: (_self.h - datumY - _self.padding.bottom) 
 	})
 
 }

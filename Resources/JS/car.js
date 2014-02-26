@@ -254,7 +254,7 @@ cgP.addBars = function(){
 	{
 		
 	
-	
+	//principle bar
 	this.bar.append("rect")
 		.attr({
 		//	x: function(d,i){return self.scales.box(i)},
@@ -263,7 +263,7 @@ cgP.addBars = function(){
 			width: this.scales.box.rangeBand()-4,
 			"class": "principle",
 		})
-		
+	//interest bar	
 	this.bar.append("rect")
 		.attr({
 		//	x: function(d,i){return self.scales.box(i)},
@@ -321,7 +321,7 @@ cgP.addBars = function(){
 		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
 			
 		//	y: self.h - self.padding.bottom + 15,
-			transform: "translate(4,"+(self.h - self.padding.bottom - 15) +") rotate(90)",
+			transform: "translate("+(self.scales.box.rangeBand()/2)+","+(self.h - self.padding.bottom - 15) +") rotate(-90)",
 			"text-anchor": "middle",
 			"class" : "month"
 			

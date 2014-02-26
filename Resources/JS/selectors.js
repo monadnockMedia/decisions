@@ -1,6 +1,6 @@
 var fvd;
 var lg;
-var toggle = false;
+var toggle = true;
 $(function(){
 	makeGraph();
 //	window.lg = new savingsGraph("#chart",fvd);

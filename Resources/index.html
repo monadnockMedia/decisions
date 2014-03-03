@@ -31,37 +31,34 @@
 					<feComposite in="SourceGraphic" in2="specOut2" operator="arithmetic" k1="10" k2="1" k3="1" k4="0" result="litPaint" />
 				</filter>
 			
-			<filter
-			       id="drop"
-			       inkscape:label="filter1">
-			      <feGaussianBlur in ="SourceAlpha"
-			         stdDeviation="3"
-			         id="feGaussianBlur3759" />
-			      <feOffset
-			         dx="-5"
-			         dy="5"
-			         id="feOffset3765"
-			         result="result1" />
-					<feComponentTransfer in1 = "result1" result="result2">
+<filter id="drop" inkscape:label="filter1">
+	<feGaussianBlur in ="SourceAlpha" stdDeviation="3"  id="feGaussianBlur3759" />
+	<feOffset dx="-5" dy="5" id="feOffset3765"result="result1" />
+	<feComponentTransfer in1 = "result1" result="result2">
 
-					        <feFuncA type="linear" slope="2"></feFuncA>
-					    </feComponentTransfer>
-			
-			      <feMerge
-			         id="feMerge3767"
-			         result="result1">
-			       
-			        <feMergeNode
-			           inkscape:collect="always"
-			           id="feMergeNode3771"
-			           in="result2" />
-					 <feMergeNode
-				           inkscape:collect="always"
-				           id="feMergeNode3769"
-				           in="SourceGraphic" />
-			      </feMerge>
-			    </filter>
-			
+		<feFuncA type="linear" slope="2"></feFuncA>
+	</feComponentTransfer>
+
+	<feMerge id="feMerge3767" result="result1">
+
+		<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+		<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+	</feMerge>
+</filter>
+<filter id="drop2" inkscape:label="filter1">
+	<feGaussianBlur in ="SourceAlpha" stdDeviation="1"  id="feGaussianBlur3759" />
+	<feOffset dx="1" dy="1" id="feOffset3765"result="result1" />
+	<feComponentTransfer in1 = "result1" result="result2">
+
+		<feFuncA type="linear" slope="2"></feFuncA>
+	</feComponentTransfer>
+
+	<feMerge id="feMerge3767" result="result1">
+
+		<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+		<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+	</feMerge>
+</filter>			
 			
 		<filter id="glow1" height="130%">
 	    	<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blurred"></feGaussianBlur>
@@ -70,13 +67,69 @@
 			        <feFuncA type="linear" slope="2"></feFuncA>
 			    </feComponentTransfer>
 			</filter>
+			
+			
+			<filter
+			       id="outline"
+			       color-interpolation-filters="sRGB">
+					<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="1" />
+			      <feGaussianBlur
+			         id="feGaussianBlur2997"
+			         stdDeviation="1"
+			         in="fat"
+			         result="blurred" />
+				
+			      <feComposite
+			         id="feComposite2999"
+			         in2="blurred"
+			         result="mix"
+			         operator="arithmetic"
+			         in="SourceGraphic"
+			         k2="1"
+			         k3="10" />
+			      <feComposite
+			         id="feComposite3001"
+			         in2="mix"
+			         k2="1"
+			         operator="in"
+			         in="mix"
+			         result="result4" />
+			    </filter>
+			
+			
+				<filter
+				       id="outlinesm"
+				       color-interpolation-filters="sRGB">
+						<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="0" />
+				      <feGaussianBlur
+				         id="feGaussianBlur2997"
+				         stdDeviation="1"
+				         in="fat"
+				         result="blurred" />
+			
+				      <feComposite
+				         id="feComposite2999"
+				         in2="blurred"
+				         result="mix"
+				         operator="arithmetic"
+				         in="SourceGraphic"
+				         k2="1"
+				         k3="2" />
+				      
+				    </filter>
+			
+			
+			
+			
 			<pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90)">
 
 			  <path d="M-1,1 l2,-2
 			           M0,4 l4,-4
 			           M3,5 l2,-2" ></path>
 			    <rect class="patternFill" x="0" y="0" width="100%" height="100%" fill="#ff0000"></rect>
-			 </pattern></difs></svg>
+			 </pattern></defs>
+			
+		</svg>
 	<div id="chart">
 		
 	</div>

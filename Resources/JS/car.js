@@ -25,16 +25,28 @@ function carGraph( sel, _data ){
 	this.container = d3.select(sel);
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
+	
+
+	
 	this.padding = {
 		left: 70,
-		right: 30,
+		right: 50,
 		top: 30,
-		bottom: 50
+		bottom: 50,
+		font: 4
 	}
 	this.innerWidth = this.w - this.padding.left - this.padding.right;
 	this.innerHeight = this.h - this.padding.top - this.padding.bottom;
 	this.innerTop = this.h - this.padding.top;
 	this.innerRight = this.w - this.padding.right;
+	
+	
+	var gutter = 25;
+	
+	this.lineGroupH = (this.h - this.padding.bottom)*.90;
+	this.barGroupH = (this.h)*.10;
+	this.barGroupY = (this.lineGroupH+gutter);
+	
 	var clipGutter = 5;
 	//now call some functions to build a graph
 	this.setScales();
@@ -49,6 +61,8 @@ function carGraph( sel, _data ){
 		class: "lineGraph"
 	});
 	
+	this.lineGroup = this.svg.append("g").attr("class","lineGroup");
+	
 	//and a clipping mask for lines (so they don't cross the y-axis)
 	this.svg.append("defs").append("clipPath")
 		.attr("id","clip")
@@ -61,7 +75,7 @@ function carGraph( sel, _data ){
 		})
 	
 	//and a group for the chart's lines, masked by the clipPath
-	this.chartBody = this.svg.append("g")
+	this.chartBody = this.lineGroup.append("g")
 		.attr("clip-path", "url(#clip)").attr("class","chartBody")
 	
 	this.addAxes();
@@ -82,7 +96,10 @@ cgP.setScales = function(){
 	this.scales = {};
 	this.scales.range = {};
 	this.scales.range.x = [this.padding.left, this.innerRight];
-	this.scales.range.y = [ this.h - this.padding.bottom, this.padding.top];
+	
+	this.scales.range.y = [ this.lineGroupH, this.padding.top];
+	
+	this.scales.range.boxy = [0,this.barGroupH];
 	
 	this.scales.x = d3.time.scale()
 		.range(this.scales.range.x)
@@ -90,11 +107,11 @@ cgP.setScales = function(){
 		
 	this.scales.y = d3.scale.linear()
 		.range(this.scales.range.y) //svg origin is top-left
-		.domain([0,this.cars.Luxury]);
-	//	.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+	//	.domain([0,this.cars.Luxury]);
+		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
 		
 		this.scales.iy = d3.scale.linear()
-			.range(this.scales.range.y) //svg origin is top-left
+			.range(this.scales.range.boxy) //svg origin is top-left
 			.domain([0,self.amParams.contrib]);
 			
 	this.scales.box = d3.scale.ordinal()
@@ -137,17 +154,17 @@ cgP.addAxes = function(){
 		}).call(this.xA) */
 	
 		
-	this.svg.append("g").attr({
+	this.lineGroup.append("g").attr({
 		class: "y axis lifted",
 		transform: "translate("+(this.padding.left-this.axesPad ) +","+0+")"
 	}).call(this.yA)
 }
 cgP.updateAxes = function(){
 	this.yA.scale(this.scales.y);
-	this.svg.select(".y.axis").transition().call(this.yA);
+	this.lineGroup.select(".y.axis").transition().call(this.yA);
 	
 	this.xA.scale(this.scales.x);
-	this.svg.select(".x.axis").transition().call(this.xA);
+	this.lineGroup.select(".x.axis").transition().call(this.xA);
 }
 cgP.amortize = function(){
 	with (this.amParams){
@@ -191,21 +208,40 @@ cgP.addLines = function(){
 		area : d3.svg.line()
 			.x(function(d){ return self.scales.x(d.date) })
 			.y(function(d){ return self.scales.y(d.val)}),
+			
+		principle : d3.svg.line()
+			.x(function(d){ return self.scales.x(d.date) })
+			.y(function(d){ return self.scales.y(d.val)}),
 		}
 
-	this.lineGroup = this.svg.append("g").attr("class","lineGroup");
-	this.area = this.lineGroup.append("path").attr("class","line area");
-	this.total = this.lineGroup.append("path").attr("class","line total");
-	this.interest = this.lineGroup.append("path").attr("class","line interest");
+	//this.lineGroup = this.svg.append("g").attr("class","lineGroup");
+	this.area = this.lineGroup.append("path").attr("class","line area").attr("id","interestArea");
+	this.total = this.lineGroup.append("path").attr("class","line total lifted").attr("id","lineTotal");
+//	this.interest = this.lineGroup.append("path").attr("class","line interest");
 	
-	this.balance = this.lineGroup.append("path").attr("class","line balance lifted");
-	this.lineLabel = this.lineGroup.append("g").attr("class","lifted");
-	this.lineNode = this.lineLabel.append("circle").attr({
-		class:"balance"})
+	this.balance = this.lineGroup.append("path").attr("class","line balance lifted").attr("id","lineBalance");
+	this.lineLabel = this.lineGroup.append("g").attr("class","outline");
+	this.mid = this.lineGroup.append("path").attr("id","toPrinciple");
+	
+	this.lineNodeTotal = this.lineLabel.append("circle").attr({
+		class:"total"})
+		this.lineNodeBalance = this.lineLabel.append("circle").attr({
+			class:"balance"})
 		
-	this.lineText = this.lineLabel.append("text").attr({
-		class: "linelabel "
-	}).text("Balance")
+	this.lineTextBalance = this.lineLabel.append("text").attr({
+		class: "linelabel balance",
+		dy: -5
+	}).append("textPath").text("Balance").attr(	"startOffset","5%");
+	
+	this.lineTextTotal = this.lineLabel.append("text").attr({
+		class: "linelabel total",
+		dy:-5
+	}).append("textPath").text("Total Paid").attr(	"startOffset","70%");
+	
+	this.lineTextInterest = this.lineGroup.append("text").attr({
+		class: "linelabel outline interestPaid",
+		dy:5
+	}).append("textPath").text("Interest Paid").attr(	"startOffset","70%")
 	
 	this.drawLines();
 	
@@ -214,6 +250,7 @@ cgP.addLines = function(){
 cgP.drawLines = function(){
 	var prin = this.data.map(function(d){return {date: d.date, val: d.cumToPrinciple}});
 	var total = this.data.map(function(d){return {date: d.date, val: d.totalPaid}});
+	var mid = this.data.map(function(d){return {date: d.date, val: d.totalPaid-((d.totalPaid-d.cumToPrinciple)/2)}});
 	
 	areaData = prin.concat(total.reverse());
 	this.area.datum(areaData)
@@ -223,17 +260,37 @@ cgP.drawLines = function(){
 //	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
 	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance);
 	
+	this.mid.datum(mid).attr("d", this.lineFunctions.principle);
 
 	
-	this.lineNode.attr({
+	this.lineNodeTotal.attr({
+		r: 6,
+		cx: self.scales.box(self.data.length-1)+self.scales.box.rangeBand(),
+		cy: self.scales.y(self.data[self.data.length-1].totalPaid)
+	});
+	
+	this.lineNodeBalance.attr({
 		r: 6,
 		cx: self.scales.box(0),
 		cy: self.scales.y(self.data[0].principle)
+	});
+	
+	
+	this.lineTextBalance.attr({
+	//	transform: "translate("+(self.scales.box(0))+","+ (self.scales.y(self.data[0].principle)-8)+") rotate(-45)",
+		
 	})
 	
-	this.lineText.attr({
-		transform: "translate("+(self.scales.box(0)+12)+","+ (self.scales.y(self.data[0].principle)-8)+") rotate(-45)",
-		
+	this.lineTextBalance.attr({
+		"xlink:href":"#lineBalance",
+	})
+	
+	this.lineTextTotal.attr({
+		"xlink:href":"#lineTotal",
+	})
+	
+	this.lineTextInterest.attr({
+		"xlink:href":"#toPrinciple",
 	})
 }
 
@@ -241,70 +298,53 @@ cgP.drawLines = function(){
 
 cgP.addBars = function(){
 	this.barGroup = this.svg.append("g").attr("class","barGroup");
+	this.yearGroup = this.svg.append("g").attr("class","yearGroup").attr("transform","translate(0,"+(self.barGroupY-18)+")");
 	
 	boxWidth = 6;
+	
 	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
 		.attr("class","bar")
-		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+",0)"})
+		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+(self.barGroupY+12)+")"})
 	
 		
-	lines = false;
+
 	bars = true;
-	if (!lines && bars)
-	{
+
 		
-	
-	//principle bar
-	this.bar.append("rect")
-		.attr({
-		//	x: function(d,i){return self.scales.box(i)},
-			y: function(d){return self.scales.iy( d.paymentToPrinciple )},
-			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToPrinciple)},
-			width: this.scales.box.rangeBand()-4,
-			"class": "principle",
-		})
 	//interest bar	
 	this.bar.append("rect")
 		.attr({
+			x:2,
 		//	x: function(d,i){return self.scales.box(i)},
-			y: function(d){return self.scales.iy(d.payment) },
-			height: function(d){return (self.h - self.padding.bottom ) - self.scales.iy(d.paymentToInterest)-1},
+			y: 0 ,
+			height: function(d){return self.scales.iy(d.paymentToInterest)},
 			width: this.scales.box.rangeBand()-4,
 			"class": "interest"
-		}) 
-
-	}
-	
-	if (!lines && !bars)
-	{
-		
-	
-	
-	this.bar.append("rect")
-		.attr({
-			x: function(d,i){return self.scales.box(i)},
-			y: function(d){return self.scales.y( d.cumToPrinciple )},
-			height: function(d){return (self.h - self.padding.bottom ) - self.scales.y(d.cumToPrinciple)},
-			width: this.scales.box.rangeBand()-4,
-			"class": "principle"
 		})
 		
+	//principle bar
 	this.bar.append("rect")
 		.attr({
-			x: function(d,i){return self.scales.box(i)},
-			y: function(d){return self.scales.y(d.totalPaid) },
-			height: function(d){return (self.h - self.padding.bottom ) - self.scales.y(d.interest)-1},
+			x:2,
+		//	x: function(d,i){return self.scales.box(i)},
+			y: function(d){  return self.scales.iy(d.paymentToInterest) },
+		//	y:37,
+		//	height: 20,
+			height: function(d){return self.scales.iy(d.paymentToPrinciple)},
 			width: this.scales.box.rangeBand()-4,
-			"class": "interest"
-		}) 
+			"class": "principle",
+		})
 
-	}
+
 	
-	this.bar.append("text")
+	
+
+	
+/*	this.bar.append("text")
 		.attr({
 			x:(self.scales.box.rangeBand()/2),
 	
-			y: self.h - self.padding.bottom + 18,
+			y:-10,
 			"text-anchor": "middle",
 			"class":"year"
 		}).text(function(d, i){  
@@ -313,7 +353,7 @@ cgP.addBars = function(){
 				ret = d.date.getFullYear();
 			}
 			return ret;
-			})
+			})*/
 			
 	this.bar.append("text")
 		.attr({
@@ -321,7 +361,7 @@ cgP.addBars = function(){
 		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
 			
 		//	y: self.h - self.padding.bottom + 15,
-			transform: "translate("+(self.scales.box.rangeBand()/2)+","+(self.h - self.padding.bottom - 15) +") rotate(-90)",
+			transform: "translate("+(self.scales.box.rangeBand()/2)+","+/*(self.h - self.padding.bottom - 15) */24+") rotate(-90)",
 			"text-anchor": "middle",
 			"class" : "month"
 			
@@ -330,27 +370,67 @@ cgP.addBars = function(){
 			return ret;
 		})
 		
-	if (lines)
-	{
-	this.pLine = this.bar.append("line").attr("class","principle")
-		.attr({
-			x1: 0, 
-			y1: self.h - self.padding.bottom,
-			x2: 0, 
-			y2: function(d){return self.scales.iy(d.paymentToPrinciple)}
-			
-		})
-		
-		this.iLine = this.bar.append("line")
-			.attr({
-				x1: 0, 
-				y1: function(d){return self.scales.iy(d.paymentToPrinciple)},
-				x2: 0, 
-				y2: function(d){return self.scales.iy(d.payment)},
-				fill: "#f00",
-				class:"interest"
 
-			})}
+		
+	this.yearRanges = [];
+	var y = -1;
+	var lastI = -1;
+	$.each(this.data, function(i,d){
+		if(+d.year != y){
+			y = d.year;
+			var o = {};
+			o.min = i;
+			o.date = d.date;
+			self.yearRanges.push(o);
+			lastI = i;
+		}
+		
+	})  
+	
+	this.yearRanges = this.yearRanges.map(function(d,i){
+		I = (i == self.yearRanges.length-1) ? self.data.length : self.yearRanges[i+1].min;
+	
+		var ret = d;
+		ret.max = I;
+		console.log("index");
+		console.log(d);
+		return ret;
+	})
+
+	
+
+	this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
+		transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
+	});
+	
+	this.years.append("rect").attr({
+		x: 0,
+		y:0,
+		width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
+		height: 20,
+		class: "yearBar",
+		"stroke-dasharray":"2,1"
+		
+	});  
+/*	this.years.append("polygon").attr("points", function(d){
+		var H = 20;
+		var gW = self.scales.box.rangeBand;
+		var poly=[
+			[0,0],
+			[self.scales.box.rangeBand()*(d.max-d.min-0.5),0],
+			[self.scales.box.rangeBand()*(d.max-d.min),H/2],
+			[self.scales.box.rangeBand()*(d.max-d.min-0.5),H],
+			[0,H]
+		]
+		
+		return poly.join(" ");
+	}).attr("class","yearBar") */
+
+	
+	this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
+		{"class":"year outlinesm", y:20-self.padding.font,
+		x:self.padding.font});
+	
 }		
 
 cgP.addLegend = function(){

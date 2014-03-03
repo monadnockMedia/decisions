@@ -43,7 +43,7 @@ body {
   margin-right: auto;
   margin-left: auto;
   background-color: rgba(16, 6, 159, 0.5);
-  box-shadow: inset 0 -20px 200px #000000;
+  box-shadow: inset 0 -20px 200px #000000, inset 0 -60px 200px #000000;
 }
 .axis path {
   stroke: #ffffff;
@@ -86,23 +86,36 @@ path {
   fill: rgba(197, 41, 155, 0.5);
   fill: url(#diagonalHatch);
   stroke: none;
-  visibility: hidden;
+  visibility: visible;
 }
 .line.total {
   stroke-width: 3px;
-  stroke: #10069f;
-  visibility: hidden;
+  stroke: #c5299b;
+  visibility: visible;
 }
 .line.balance {
   stroke: white;
   stroke-width: 3px;
 }
+.outline {
+  filter: url(#outline);
+}
+.outlinesm {
+  filter: url(#outlinesm);
+}
+#toPrinciple {
+  visibility: hidden;
+}
 circle.balance {
   fill: white;
   stroke: white;
 }
+circle.total {
+  fill: #c5299b;
+  stroke: #c5299b;
+}
 .linelabel {
-  font-size: .5em;
+  font-size: .4em;
 }
 .lifted {
   filter: url(#drop);
@@ -194,6 +207,9 @@ svg text.hidden {
   background-color: rgba(164, 219, 232, 0.5);
   border: 1px solid #a4dbe8;
 }
+line.interest {
+  fill: url(#diagonalHatch);
+}
 .principle {
   stroke: none;
   stroke: #c5299b;
@@ -204,12 +220,16 @@ svg text.hidden {
 .year {
   font-size: 11pt;
   fill: white ;
-  stroke: none;
 }
 .month {
   font-size: 7pt;
   fill: white ;
   stroke: none;
+}
+.yearBar {
+  fill: rgba(255, 255, 255, 0.3);
+  stroke: rgba(0, 0, 0, 0);
+  stroke-width: 2px;
 }
 .bar {
   stroke: none;

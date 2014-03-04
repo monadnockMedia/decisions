@@ -15,10 +15,10 @@ function carGraph( sel, _data ){
 		'Luxury':50000
 	}
 	this.amParams = {
-		contrib: 450,
+		contrib: 1200,
 		rate: 20,
 	//	balance: this.cars.Midsized
-	balance: 10000
+	balance: 25000
 	}
 	this.amortize();
 	//set up viewport size, etc.
@@ -29,10 +29,10 @@ function carGraph( sel, _data ){
 
 	
 	this.padding = {
-		left: 70,
-		right: 50,
+		left: 68,
+		right: 80,
 		top: 30,
-		bottom: 50,
+		bottom: 60,
 		font: 4
 	}
 	this.innerWidth = this.w - this.padding.left - this.padding.right;
@@ -43,8 +43,8 @@ function carGraph( sel, _data ){
 	
 	var gutter = 25;
 	
-	this.lineGroupH = (this.h - this.padding.bottom)*.90;
-	this.barGroupH = (this.h)*.10;
+	this.lineGroupH = (this.h - this.padding.bottom)*.80;
+	this.barGroupH = (this.h)*.20;
 	this.barGroupY = (this.lineGroupH+gutter);
 	
 	var clipGutter = 5;
@@ -77,9 +77,10 @@ function carGraph( sel, _data ){
 	//and a group for the chart's lines, masked by the clipPath
 	this.chartBody = this.lineGroup.append("g")
 		.attr("clip-path", "url(#clip)").attr("class","chartBody")
-	
-	this.addAxes();
+		
 	this.addBars();
+	this.addAxes();
+	
 	this.addLines();
 	this.addLegend();
 	this.buildSliders();
@@ -99,11 +100,13 @@ cgP.setScales = function(){
 	
 	this.scales.range.y = [ this.lineGroupH, this.padding.top];
 	
-	this.scales.range.boxy = [0,this.barGroupH];
+	this.scales.range.boxy = [this.barGroupH,0];
 	
 	this.scales.x = d3.time.scale()
 		.range(this.scales.range.x)
 		.domain(d3.extent(this.data, function(d){return +d.date}));
+		
+
 		
 	this.scales.y = d3.scale.linear()
 		.range(this.scales.range.y) //svg origin is top-left
@@ -115,7 +118,7 @@ cgP.setScales = function(){
 			.domain([0,self.amParams.contrib]);
 			
 	this.scales.box = d3.scale.ordinal()
-		.rangeRoundBands(this.scales.range.x, 0)
+		.rangeBands(this.scales.range.x)
 		.domain(d3.range(this.data.length))
 		
 	
@@ -145,6 +148,12 @@ cgP.setAxes = function(){
 		.scale(this.scales.y)
 		.orient('left')
 		.tickFormat(function(t){return finance.format(t, 'USD')})
+		
+	this.bA = d3.svg.axis()
+		.scale(this.scales.iy)
+		.orient('left')
+		.tickValues([0,this.amParams.contrib])
+		.tickFormat(function(t){return finance.format(t, 'USD')})
 }
 cgP.addAxes = function(){
 
@@ -152,7 +161,10 @@ cgP.addAxes = function(){
 			class: "x axis",
 			transform: "translate(0,"+(this.h - this.padding.bottom + this.axesPad ) +")", //transform from top-left to bottom-left (minus padding)
 		}).call(this.xA) */
-	
+	this.barGroup.append("g").attr({
+			class: "y axis lifted",
+			transform: "translate("+(this.padding.left-this.axesPad ) +","+0+")"
+	}).call(this.bA)
 		
 	this.lineGroup.append("g").attr({
 		class: "y axis lifted",
@@ -190,6 +202,8 @@ cgP.amortize = function(){
 }
 
 cgP.addLines = function(){
+	
+	//create line functions
 	this.lineFunctions = {
 	
 		interest : d3.svg.line()
@@ -214,32 +228,40 @@ cgP.addLines = function(){
 			.y(function(d){ return self.scales.y(d.val)}),
 		}
 
-	//this.lineGroup = this.svg.append("g").attr("class","lineGroup");
+	//Append groups and child paths for area, total, balance.
 	this.area = this.lineGroup.append("path").attr("class","line area").attr("id","interestArea");
 	this.total = this.lineGroup.append("path").attr("class","line total lifted").attr("id","lineTotal");
-//	this.interest = this.lineGroup.append("path").attr("class","line interest");
-	
 	this.balance = this.lineGroup.append("path").attr("class","line balance lifted").attr("id","lineBalance");
-	this.lineLabel = this.lineGroup.append("g").attr("class","outline");
+	//invisible line for label to align to 
 	this.mid = this.lineGroup.append("path").attr("id","toPrinciple");
 	
-	this.lineNodeTotal = this.lineLabel.append("circle").attr({
-		class:"total"})
-		this.lineNodeBalance = this.lineLabel.append("circle").attr({
-			class:"balance"})
-		
-	this.lineTextBalance = this.lineLabel.append("text").attr({
-		class: "linelabel balance",
+	//add a group for labels
+	this.lineLabel = this.lineGroup.append("g").attr("class","linelabel");
+	
+	//an object to access our labels	
+	this.labels = {};
+	
+	//Total labels
+	this.labels.TotalPaid = this.lineLabel.append("text");
+	this.labels.TotalInterest = this.lineLabel.append("text");
+	
+	
+	
+	
+	this.labels.Balance = this.lineLabel.append("text").attr({
+		class: "balance",
 		dy: -5
 	}).append("textPath").text("Balance").attr(	"startOffset","5%");
 	
-	this.lineTextTotal = this.lineLabel.append("text").attr({
-		class: "linelabel total",
+	this.labels.Total = this.lineLabel.append("text").attr({
+		class: " total",
 		dy:-5
 	}).append("textPath").text("Total Paid").attr(	"startOffset","70%");
 	
-	this.lineTextInterest = this.lineGroup.append("text").attr({
-		class: "linelabel outline interestPaid",
+
+	
+	this.labels.Interest = this.lineLabel.append("text").attr({
+		class: " outline interestPaid",
 		dy:5
 	}).append("textPath").text("Interest Paid").attr(	"startOffset","70%")
 	
@@ -262,34 +284,32 @@ cgP.drawLines = function(){
 	
 	this.mid.datum(mid).attr("d", this.lineFunctions.principle);
 
+	nodeRad = 6;
 	
-	this.lineNodeTotal.attr({
-		r: 6,
-		cx: self.scales.box(self.data.length-1)+self.scales.box.rangeBand(),
-		cy: self.scales.y(self.data[self.data.length-1].totalPaid)
-	});
+
+
 	
-	this.lineNodeBalance.attr({
-		r: 6,
-		cx: self.scales.box(0),
-		cy: self.scales.y(self.data[0].principle)
-	});
+	//position the total paid labels
+	this.labels.TotalPaid.attr({
+		x: self.innerRight+self.padding.font-(nodeRad/2),
+		y: self.scales.y(self.data[self.data.length-1].totalPaid)+(nodeRad/2)
+	}).text("\u25C2"+finance.format(self.data[self.data.length-1].totalPaid.toFixed(0), 'USD'));
+	
+	this.labels.TotalInterest.attr({
+		x: self.innerRight+self.padding.font-(nodeRad/2),
+		y: self.scales.y(mid[mid.length-1].val)+(nodeRad/2)
+	}).text("\u25C2"+finance.format(mid[mid.length-1].val.toFixed(0), 'USD'));
 	
 	
-	this.lineTextBalance.attr({
-	//	transform: "translate("+(self.scales.box(0))+","+ (self.scales.y(self.data[0].principle)-8)+") rotate(-45)",
-		
-	})
-	
-	this.lineTextBalance.attr({
+	this.labels.Balance.attr({
 		"xlink:href":"#lineBalance",
 	})
 	
-	this.lineTextTotal.attr({
+	this.labels.Total.attr({
 		"xlink:href":"#lineTotal",
 	})
 	
-	this.lineTextInterest.attr({
+	this.labels.Interest.attr({
 		"xlink:href":"#toPrinciple",
 	})
 }
@@ -297,14 +317,14 @@ cgP.drawLines = function(){
 
 
 cgP.addBars = function(){
-	this.barGroup = this.svg.append("g").attr("class","barGroup");
+	this.barGroup = this.svg.append("g").attr("class","barGroup").attr("transform","translate(0,"+(self.barGroupY+12)+")");
 	this.yearGroup = this.svg.append("g").attr("class","yearGroup").attr("transform","translate(0,"+(self.barGroupY-18)+")");
 	
 	boxWidth = 6;
 	
 	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
 		.attr("class","bar")
-		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+(self.barGroupY+12)+")"})
+		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+0+")"})
 	
 		
 
@@ -317,7 +337,7 @@ cgP.addBars = function(){
 			x:2,
 		//	x: function(d,i){return self.scales.box(i)},
 			y: 0 ,
-			height: function(d){return self.scales.iy(d.paymentToInterest)},
+			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToInterest)},
 			width: this.scales.box.rangeBand()-4,
 			"class": "interest"
 		})
@@ -327,10 +347,10 @@ cgP.addBars = function(){
 		.attr({
 			x:2,
 		//	x: function(d,i){return self.scales.box(i)},
-			y: function(d){  return self.scales.iy(d.paymentToInterest) },
+			y: function(d){  return self.barGroupH - self.scales.iy(d.paymentToInterest) },
 		//	y:37,
 		//	height: 20,
-			height: function(d){return self.scales.iy(d.paymentToPrinciple)},
+			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToPrinciple)},
 			width: this.scales.box.rangeBand()-4,
 			"class": "principle",
 		})
@@ -361,9 +381,9 @@ cgP.addBars = function(){
 		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
 			
 		//	y: self.h - self.padding.bottom + 15,
-			transform: "translate("+(self.scales.box.rangeBand()/2)+","+/*(self.h - self.padding.bottom - 15) */24+") rotate(-90)",
+			transform: "translate("+(self.scales.box.rangeBand()/2)+","+/*(self.h - self.padding.bottom - 15) */14+") rotate(-90)",
 			"text-anchor": "middle",
-			"class" : "month"
+			"class" : "month outlinesm"
 			
 		}).text(function(d){  
 			ret = self.months[+d.date.getMonth()];
@@ -434,7 +454,7 @@ cgP.addBars = function(){
 }		
 
 cgP.addLegend = function(){
-	
+	/*
 	this.legend = this.container.append("div").attr("id","legend");
 	
 	this.legend.append("div").attr("class","key payment interest");
@@ -442,7 +462,7 @@ cgP.addLegend = function(){
 	
 	this.legend.append("div").attr("class","key principle interest");
 	this.legend.append("p").text("Payment to Principle")
-	
+	*/
 }
 
 cgP.buildSliders = function(){
@@ -580,6 +600,51 @@ cgP.buildSliders = function(){
 			showTip();
 		}
 	});
+	
+	rectSize = 12;
+	legendPad = 6;
+	
+	txtLeft = rectSize+this.padding.font;
+	rectLeft = 0;
+//	txtLeft = 0;
+//	rectLeft = 55;
+	
+	this.smLegend = this.barGroup.append("g").attr({
+		class: "legend",
+		transform: "translate("+(this.innerRight+legendPad)+","+legendPad+")"
+	})
+	
+	
+	
+	this.iL = this.smLegend.append("g");
+	
+	this.iL.append("rect").attr({
+		x: rectLeft,
+		width: rectSize, height: rectSize,
+		"class":"interest"
+	});
+	
+	this.iL.append("text").attr({
+		y: rectSize-2,
+		x: txtLeft,
+		"class":"legendText"
+	}).text("Interest")
+	
+	
+	this.pL = this.smLegend.append("g").attr("transform","translate(0,"+(rectSize+legendPad)+")");
+	
+	this.pL.append("rect").attr({
+		x: rectLeft,
+		width: rectSize, height: rectSize,
+		"class":"principle"
+	});
+	
+	this.pL.append("text").attr({
+		y: rectSize-2,
+		x: txtLeft,
+		"class":"legendText"
+	}).text("Principle")
+
 	
 
 }

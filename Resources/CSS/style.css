@@ -37,8 +37,8 @@ body {
   background-repeat: none;
 }
 #chart {
-  width: 800px;
-  height: 450px;
+  width: 90%;
+  height: 550px;
   background-color: lightsteelblue;
   margin-right: auto;
   margin-left: auto;
@@ -85,7 +85,7 @@ path {
 .line.area {
   fill: rgba(197, 41, 155, 0.5);
   fill: url(#diagonalHatch);
-  stroke: none;
+  stroke: white;
   visibility: visible;
 }
 .line.total {
@@ -109,10 +109,12 @@ path {
 circle.balance {
   fill: white;
   stroke: white;
+  visibility: hidden;
 }
 circle.total {
   fill: #c5299b;
   stroke: #c5299b;
+  visibility: hidden;
 }
 .linelabel {
   font-size: .4em;
@@ -261,4 +263,7 @@ line.principle {
   display: inline-block;
   line-height: 1.25em;
   margin-right: .5em;
+}
+.legendText {
+  font-size: 12px;
 }

@@ -40,8 +40,8 @@ body{
 	background-repeat: none;
 }
 #chart{
-	width: 800px;
-	height: 450px;
+	width: 90%;
+	height: 550px;
 	background-color: lightsteelblue;
 	margin-right:auto;
 	margin-left:auto;
@@ -108,7 +108,7 @@ path{
 	&.area{
 		fill: fade(@pink, 50);
 		fill: url(#diagonalHatch);
-		stroke:none;
+		stroke:white;
 		visibility: visible;
 	}
 	&.total{
@@ -140,10 +140,12 @@ circle{
 	&.balance{
 		fill: white;
 		stroke:white;
+		visibility: hidden;
 	}
 	&.total{
 		fill: @pink;
 		stroke:@pink;
+			visibility: hidden;
 	}
 }
 
@@ -324,5 +326,7 @@ line.principle{
 		margin-right: .5em;
 	}
 }
-
+.legendText{
+	font-size: 12px;
+}
 

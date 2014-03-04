@@ -15,10 +15,10 @@ function carGraph( sel, _data ){
 		'Luxury':50000
 	}
 	this.amParams = {
-		contrib: 1200,
-		rate: 20,
+		contrib: 600,
+		rate: 7,
 	//	balance: this.cars.Midsized
-	balance: 25000
+		balance: 25000
 	}
 	this.amortize();
 	//set up viewport size, etc.
@@ -273,6 +273,13 @@ cgP.drawLines = function(){
 	var prin = this.data.map(function(d){return {date: d.date, val: d.cumToPrinciple}});
 	var total = this.data.map(function(d){return {date: d.date, val: d.totalPaid}});
 	var mid = this.data.map(function(d){return {date: d.date, val: d.totalPaid-((d.totalPaid-d.cumToPrinciple)/2)}});
+	var totalPaid = total[total.length-1].val;
+	var toPrin = prin[prin.length-1].val;
+	
+	console.log("TotalPaid: "+totalPaid);
+	console.log("toPrinciple: "+toPrin);
+	
+	
 	
 	areaData = prin.concat(total.reverse());
 	this.area.datum(areaData)
@@ -293,12 +300,12 @@ cgP.drawLines = function(){
 	this.labels.TotalPaid.attr({
 		x: self.innerRight+self.padding.font-(nodeRad/2),
 		y: self.scales.y(self.data[self.data.length-1].totalPaid)+(nodeRad/2)
-	}).text("\u25C2"+finance.format(self.data[self.data.length-1].totalPaid.toFixed(0), 'USD'));
+	}).text("\u25C2"+finance.format(totalPaid.toFixed(0), 'USD'));
 	
 	this.labels.TotalInterest.attr({
-		x: self.innerRight+self.padding.font-(nodeRad/2),
+		x: self.innerRight+self.padding.font-(nodeRad-1),
 		y: self.scales.y(mid[mid.length-1].val)+(nodeRad/2)
-	}).text("\u25C2"+finance.format(mid[mid.length-1].val.toFixed(0), 'USD'));
+	}).text("-"+finance.format(( totalPaid - toPrin  ).toFixed(0), 'USD'));
 	
 	
 	this.labels.Balance.attr({
@@ -375,21 +382,22 @@ cgP.addBars = function(){
 			return ret;
 			})*/
 			
-	this.bar.append("text")
+/*	this.bar.append("text")
 		.attr({
 			
 		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
 			
 		//	y: self.h - self.padding.bottom + 15,
-			transform: "translate("+(self.scales.box.rangeBand()/2)+","+/*(self.h - self.padding.bottom - 15) */14+") rotate(-90)",
+		//	transform: "translate("+(self.scales.box.rangeBand()/2)+","+14+") rotate(-90)",
 			"text-anchor": "middle",
 			"class" : "month outlinesm"
 			
 		}).text(function(d){  
-			ret = self.months[+d.date.getMonth()];
+		//	ret = self.months[+d.date.getMonth()];
+			ret = d.month;
 			return ret;
 		})
-		
+		*/
 
 		
 	this.yearRanges = [];

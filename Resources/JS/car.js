@@ -170,6 +170,7 @@ cgP.addAxes = function(){
 		class: "y axis lifted",
 		transform: "translate("+(this.padding.left-this.axesPad ) +","+0+")"
 	}).call(this.yA)
+	
 }
 cgP.updateAxes = function(){
 	this.yA.scale(this.scales.y);
@@ -307,7 +308,7 @@ cgP.drawLines = function(){
 		y: self.scales.y(mid[mid.length-1].val)+(nodeRad/2)
 	}).text("-"+finance.format(( totalPaid - toPrin  ).toFixed(0), 'USD'));
 	
-	
+	//attach path-following labels to correct path IDs
 	this.labels.Balance.attr({
 		"xlink:href":"#lineBalance",
 	})
@@ -324,82 +325,70 @@ cgP.drawLines = function(){
 
 
 cgP.addBars = function(){
+	
+	var boxPad = 4;
+	
+	//a group for bars, one for years as well, translate them to their appropriate y-location
 	this.barGroup = this.svg.append("g").attr("class","barGroup").attr("transform","translate(0,"+(self.barGroupY+12)+")");
 	this.yearGroup = this.svg.append("g").attr("class","yearGroup").attr("transform","translate(0,"+(self.barGroupY-18)+")");
 	
-	boxWidth = 6;
 	
+	
+	//create a group for each bar
 	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
 		.attr("class","bar")
 		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+0+")"})
 	
 		
-
-	bars = true;
-
 		
 	//interest bar	
 	this.bar.append("rect")
 		.attr({
-			x:2,
+			x:boxPad/2,
 		//	x: function(d,i){return self.scales.box(i)},
 			y: 0 ,
 			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToInterest)},
-			width: this.scales.box.rangeBand()-4,
+			width: this.scales.box.rangeBand()-boxPad,
 			"class": "interest"
 		})
 		
 	//principle bar
 	this.bar.append("rect")
 		.attr({
-			x:2,
+			x:boxPad/2,
 		//	x: function(d,i){return self.scales.box(i)},
 			y: function(d){  return self.barGroupH - self.scales.iy(d.paymentToInterest) },
 		//	y:37,
 		//	height: 20,
 			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToPrinciple)},
-			width: this.scales.box.rangeBand()-4,
+			width: this.scales.box.rangeBand()-boxPad,
 			"class": "principle",
 		})
 
 
-	
+	this.yearRanges = this.yearRangeData;
 	
 
+	this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
+		transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
+	});
 	
-/*	this.bar.append("text")
-		.attr({
-			x:(self.scales.box.rangeBand()/2),
-	
-			y:-10,
-			"text-anchor": "middle",
-			"class":"year"
-		}).text(function(d, i){  
-			var ret = null;
-			if(+d.date.getMonth() % 12 == 0 || i == 0){
-				ret = d.date.getFullYear();
-			}
-			return ret;
-			})*/
-			
-/*	this.bar.append("text")
-		.attr({
-			
-		//	x:function(d,i){return self.scales.box(i) + (self.scales.box.rangeBand()/2)},
-			
-		//	y: self.h - self.padding.bottom + 15,
-		//	transform: "translate("+(self.scales.box.rangeBand()/2)+","+14+") rotate(-90)",
-			"text-anchor": "middle",
-			"class" : "month outlinesm"
-			
-		}).text(function(d){  
-		//	ret = self.months[+d.date.getMonth()];
-			ret = d.month;
-			return ret;
-		})
-		*/
-
+	//rect to outline year band
+	this.years.append("rect").attr({
+		x: 0,
+		y:0,
+		width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
+		height: 20,
+		class: "yearBar",
+		"stroke-dasharray":"2,1"
 		
+	});  
+	
+	this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
+		{"class":"year outlinesm", y:20-self.padding.font,
+		x:self.padding.font});
+	
+	/*
 	this.yearRanges = [];
 	var y = -1;
 	var lastI = -1;
@@ -424,22 +413,7 @@ cgP.addBars = function(){
 		console.log(d);
 		return ret;
 	})
-
-	
-
-	this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
-		transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
-	});
-	
-	this.years.append("rect").attr({
-		x: 0,
-		y:0,
-		width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
-		height: 20,
-		class: "yearBar",
-		"stroke-dasharray":"2,1"
-		
-	});  
+	*/
 /*	this.years.append("polygon").attr("points", function(d){
 		var H = 20;
 		var gW = self.scales.box.rangeBand;
@@ -453,25 +427,94 @@ cgP.addBars = function(){
 		
 		return poly.join(" ");
 	}).attr("class","yearBar") */
-
-	
-	this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
-		{"class":"year outlinesm", y:20-self.padding.font,
-		x:self.padding.font});
 	
 }		
 
-cgP.addLegend = function(){
-	/*
-	this.legend = this.container.append("div").attr("id","legend");
-	
-	this.legend.append("div").attr("class","key payment interest");
-	this.legend.append("p").text("Payment to Interest")
-	
-	this.legend.append("div").attr("class","key principle interest");
-	this.legend.append("p").text("Payment to Principle")
-	*/
+cgP.redrawBars = function(){
+		//create a group for each bar
+		this.bar.data(this.data)
+		
+		this.bar.enter().append("g")
+			.attr("class","bar")
+			.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+0+")"})
+
+
+
+		//interest bar	
+		this.bar.append("rect")
+			.attr({
+				x:boxPad/2,
+			//	x: function(d,i){return self.scales.box(i)},
+				y: 0 ,
+				height: function(d){return self.barGroupH - self.scales.iy(d.paymentToInterest)},
+				width: this.scales.box.rangeBand()-boxPad,
+				"class": "interest"
+			})
+
+		//principle bar
+		this.bar.append("rect")
+			.attr({
+				x:boxPad/2,
+			//	x: function(d,i){return self.scales.box(i)},
+				y: function(d){  return self.barGroupH - self.scales.iy(d.paymentToInterest) },
+			//	y:37,
+			//	height: 20,
+				height: function(d){return self.barGroupH - self.scales.iy(d.paymentToPrinciple)},
+				width: this.scales.box.rangeBand()-boxPad,
+				"class": "principle",
+			})
+
+
+		this.yearRanges = this.yearRangeData;
+
+
+		this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
+			transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
+		});
+
+		//rect to outline year band
+		this.years.append("rect").attr({
+			x: 0,
+			y:0,
+			width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
+			height: 20,
+			class: "yearBar",
+			"stroke-dasharray":"2,1"
+
+		});  
+
+		this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
+			{"class":"year outlinesm", y:20-self.padding.font,
+			x:self.padding.font});
+
 }
+
+cgP.yearRangeData = function(){
+	
+	yR = [];
+	var y = -1;
+	var lastI = -1;
+	$.each(self.data, function(i,d){
+		if(+d.year != y){
+			y = d.year;
+			var o = {};
+			o.min = i;
+			o.date = d.date;
+			yR.push(o);
+			lastI = i;
+		}
+		
+	})  
+	
+	res = yR.map(function(d,i){
+		I = (i == yR.length-1) ? self.data.length : yR[i+1].min;
+		var ret = d;
+		ret.max = I;
+		return ret;
+	})
+	return res;
+}
+
 
 cgP.buildSliders = function(){
 	this.buttonParams = [

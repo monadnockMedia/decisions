@@ -86,7 +86,9 @@ svg .bar{
 }
 
 .barBox{
-	fill: fade(@purple,20);
+	//fill: fade(@purple,20);
+	fill: url(#diagonalHatch);
+	fill-opacity: 0.3;
 }
 
 path{
@@ -198,6 +200,7 @@ svg text{
 	font-family: Arial;
 	margin-top: 1.5em;
 }
+
 .slider:before{
 	content: attr(title) ;
 	position:absolute;
@@ -205,6 +208,14 @@ svg text{
 	top:-.25em;
 	.uiLabel;
 }
+
+.savingsSliders{
+	& .slider:before{
+	
+	}
+}
+
+
 
 .buttons:before{
 	position:absolute;
@@ -328,5 +339,63 @@ line.principle{
 }
 .legendText{
 	font-size: 12px;
+}
+
+.carIcon{
+	float: left;
+}
+
+///
+@warnPad: 10px;
+#warnWrap{
+	position: absolute;
+	left: 140px;
+	top: 40px;
+}
+#warning{
+	-webkit-animation: warning 5s infinite;
+	-webkit-transition: all 0.5s;
+	padding-top: @warnPad;
+	padding-bottom: @warnPad;
+	background-color: fade(@purple, 50);
+	border-radius: 10px;
+	color: white;
+	overflow: hidden;
+
+	&.inactive{
+			-webkit-transform: scale(0.5);
+			width: 100px + @warnPad*2;
+	}
+	&.active{
+			-webkit-transform: scale(1);
+		width: 400px + @warnPad*2;
+	}
+	
+	& svg {
+	
+		float: left;
+		
+		margin-left: @warnPad;
+		margin-right: @warnPad;
+		& path{
+			fill: @pink; stroke: black;
+			shape-rendering: optimizeSpeed;
+			}
+	}
+	& p{
+		padding: 0;
+		margin: 0;
+		font-family: label;
+		margin-right: @warnPad;
+		width: 400px;
+	}
+}
+
+@warnGlow : lighten(@pink, 20);
+@-webkit-keyframes warning {
+	0%{ box-shadow: 0 0 0px   @warnGlow}
+	15%{ box-shadow: 0 0 20px 4px  @warnGlow; }
+	30%{ box-shadow: 0 0 0px  @warnGlow; }
+	100%{ box-shadow: 0 0 0px  @warnGlow; }
 }
 

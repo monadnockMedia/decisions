@@ -28,7 +28,7 @@ function savingsGraph( sel, _data ){
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
 	this.padding = {
-		left: 65,
+		left: 85,
 		right: 40,
 		top: 30,
 		bottom: 50
@@ -68,7 +68,7 @@ function savingsGraph( sel, _data ){
 			this.barBox = this.svg.append("rect").attr("class","barBox");
 	//and a group for the chart's lines, masked by the clipPath
 	this.chartBody = this.svg.append("g")
-		.attr("clip-path", "url(#clip)").attr("class","lifted chartBody")
+		.attr("clip-path", "url(#clip)").attr("class"," chartBody")
 	
 	this.addAxes();
 
@@ -80,7 +80,7 @@ function savingsGraph( sel, _data ){
 
 		
 	//and the path
-	this.path = this.chartBody.append("path").attr("class","line selection");
+	this.path = this.chartBody.append("path").attr("class","line selection lifted");
 	this.proj = this.chartBody.append("path").attr("class","line projection").attr("stroke-dasharray","5,5");
 	
 	
@@ -193,16 +193,17 @@ lgp.updateAxes = function(){
 
 lgp.buildSliders = function(){
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
-	this.container.append("div").attr({	
+	this.sliderDiv = this.container.append("div").attr({class:"savingsSliders"});
+	this.sliderDiv.append("div").attr({	
 		"class": "slider age",
 		title: "Age"
 	});
-	this.container.append("div").attr({
+	this.sliderDiv.append("div").attr({
 		"class": "slider contribution",
-		title: "$/month"
+		title: "Contribution"
 		
 		});
-	this.container.append("div").attr(	{
+	this.sliderDiv.append("div").attr(	{
 			"class": "slider rate",
 			title: "Rate"
 			});

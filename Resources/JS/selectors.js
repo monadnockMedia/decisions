@@ -1,6 +1,6 @@
 var fvd;
 var lg;
-var toggle = true;
+var toggle = false;
 $(function(){
 	makeGraph();
 //	window.lg = new savingsGraph("#chart",fvd);
@@ -13,13 +13,13 @@ $(function(){
 	
 	
 
-	  var path = './';
+/*	  var path = './';
 	  var fs = require('fs');
 
 	  fs.watch(path, [], function() {
 	    if (location)
 	      location.reload(false);
-	  });
+	  });*/
 
 	
 	
@@ -28,7 +28,8 @@ $(function(){
 })
 
 var makeGraph = function(){
-		window.lg = (toggle) ? new carGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
-	
+	lg = (toggle) ? new carGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
+		//lg = new carGraph("#chart",fvd);
+		
 }
 

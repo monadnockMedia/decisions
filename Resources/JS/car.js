@@ -1,4 +1,4 @@
-function carGraph( sel, _data ){
+function carGraph( sel ){
 	self = this;
 	this.months= [
 		"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
@@ -43,9 +43,7 @@ function carGraph( sel, _data ){
 	
 	var gutter = 25;
 	
-	this.lineGroupH = (this.h - this.padding.bottom)*.80;
-	this.barGroupH = (this.h)*.20;
-	this.barGroupY = (this.lineGroupH+gutter);
+	this.lineGroupH = (this.h - this.padding.bottom);
 	
 	var clipGutter = 5;
 	//now call some functions to build a graph
@@ -82,8 +80,11 @@ function carGraph( sel, _data ){
 	this.addAxes();
 	
 	this.addLines();
-	this.addLegend();
+	//this.addLegend();
 	this.buildSliders();
+	
+	var ww = $("<div id='warnWrap'/>")
+	$("body").append(ww.load("warning.html .car").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
 	
 }
 
@@ -117,9 +118,12 @@ cgP.setScales = function(){
 			.range(this.scales.range.boxy) //svg origin is top-left
 			.domain([0,self.amParams.contrib]);
 			
-	this.scales.box = d3.scale.ordinal()
+/*	this.scales.box = d3.scale.ordinal()
 		.rangeBands(this.scales.range.x)
-		.domain(d3.range(this.data.length))
+		.domain([0, +this.data.length]) */
+		this.scales.box = d3.scale.linear()
+			.range(this.scales.range.x)
+			.domain([0, +this.data.length])
 		
 	
 }
@@ -129,8 +133,10 @@ cgP.updateScales = function(){
 		.domain(d3.extent(this.data, function(d){return +d.date}));
 		
 	this.scales.y
-	.domain([0,this.cars.Luxury]);
-		//.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+	//.domain([0,this.cars.Luxury]);
+		.domain([0,d3.max(this.data, function(d){return +d.totalPaid})]);
+		
+		this.scales.box.domain([0, +this.data.length])
 }
 
 cgP.setAxes = function(){
@@ -161,10 +167,10 @@ cgP.addAxes = function(){
 			class: "x axis",
 			transform: "translate(0,"+(this.h - this.padding.bottom + this.axesPad ) +")", //transform from top-left to bottom-left (minus padding)
 		}).call(this.xA) */
-	this.barGroup.append("g").attr({
+	/*this.barGroup.append("g").attr({
 			class: "y axis lifted",
 			transform: "translate("+(this.padding.left-this.axesPad ) +","+0+")"
-	}).call(this.bA)
+	}).call(this.bA)*/
 		
 	this.lineGroup.append("g").attr({
 		class: "y axis lifted",
@@ -232,7 +238,7 @@ cgP.addLines = function(){
 	//Append groups and child paths for area, total, balance.
 	this.area = this.lineGroup.append("path").attr("class","line area").attr("id","interestArea");
 	this.total = this.lineGroup.append("path").attr("class","line total lifted").attr("id","lineTotal");
-	this.balance = this.lineGroup.append("path").attr("class","line balance lifted").attr("id","lineBalance");
+	//this.balance = this.lineGroup.append("path").attr("class","line balance lifted").attr("id","lineBalance");
 	//invisible line for label to align to 
 	this.mid = this.lineGroup.append("path").attr("id","toPrinciple");
 	
@@ -249,10 +255,10 @@ cgP.addLines = function(){
 	
 	
 	
-	this.labels.Balance = this.lineLabel.append("text").attr({
+/*	this.labels.Balance = this.lineLabel.append("text").attr({
 		class: "balance",
 		dy: -5
-	}).append("textPath").text("Balance").attr(	"startOffset","5%");
+	}).append("textPath").text("Balance").attr(	"startOffset","5%");*/
 	
 	this.labels.Total = this.lineLabel.append("text").attr({
 		class: " total",
@@ -264,7 +270,7 @@ cgP.addLines = function(){
 	this.labels.Interest = this.lineLabel.append("text").attr({
 		class: " outline interestPaid",
 		dy:5
-	}).append("textPath").text("Interest Paid").attr(	"startOffset","70%")
+	}).append("textPath").text("Total Interest Paid").attr(	"startOffset","70%")
 	
 	this.drawLines();
 	
@@ -277,8 +283,8 @@ cgP.drawLines = function(){
 	var totalPaid = total[total.length-1].val;
 	var toPrin = prin[prin.length-1].val;
 	
-	console.log("TotalPaid: "+totalPaid);
-	console.log("toPrinciple: "+toPrin);
+//	console.log("TotalPaid: "+totalPaid);
+//	console.log("toPrinciple: "+toPrin);
 	
 	
 	
@@ -288,7 +294,7 @@ cgP.drawLines = function(){
 		.transition().duration(1500).style("opacity",1);
 	this.total.datum(this.data).transition().delay(170).attr("d", self.lineFunctions.total);
 //	this.interest.datum(this.data).attr("d", this.lineFunctions.interest);
-	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance);
+//	this.balance.datum(this.data).transition().attr("d", this.lineFunctions.balance);
 	
 	this.mid.datum(mid).attr("d", this.lineFunctions.principle);
 
@@ -309,9 +315,9 @@ cgP.drawLines = function(){
 	}).text("-"+finance.format(( totalPaid - toPrin  ).toFixed(0), 'USD'));
 	
 	//attach path-following labels to correct path IDs
-	this.labels.Balance.attr({
+	/*this.labels.Balance.attr({
 		"xlink:href":"#lineBalance",
-	})
+	})*/
 	
 	this.labels.Total.attr({
 		"xlink:href":"#lineTotal",
@@ -328,165 +334,46 @@ cgP.addBars = function(){
 	
 	var boxPad = 4;
 	
-	//a group for bars, one for years as well, translate them to their appropriate y-location
-	this.barGroup = this.svg.append("g").attr("class","barGroup").attr("transform","translate(0,"+(self.barGroupY+12)+")");
-	this.yearGroup = this.svg.append("g").attr("class","yearGroup").attr("transform","translate(0,"+(self.barGroupY-18)+")");
-	
-	
-	
-	//create a group for each bar
-	this.bar = this.barGroup.selectAll("g").data(this.data).enter().append("g")
-		.attr("class","bar")
-		.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+0+")"})
-	
-		
-		
-	//interest bar	
-	this.bar.append("rect")
-		.attr({
-			x:boxPad/2,
-		//	x: function(d,i){return self.scales.box(i)},
-			y: 0 ,
-			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToInterest)},
-			width: this.scales.box.rangeBand()-boxPad,
-			"class": "interest"
-		})
-		
-	//principle bar
-	this.bar.append("rect")
-		.attr({
-			x:boxPad/2,
-		//	x: function(d,i){return self.scales.box(i)},
-			y: function(d){  return self.barGroupH - self.scales.iy(d.paymentToInterest) },
-		//	y:37,
-		//	height: 20,
-			height: function(d){return self.barGroupH - self.scales.iy(d.paymentToPrinciple)},
-			width: this.scales.box.rangeBand()-boxPad,
-			"class": "principle",
-		})
+
+	this.yearGroup = this.svg.append("g").attr("class","yearGroup").attr("transform","translate(0,"+(this.lineGroupH)+")");
 
 
-	this.yearRanges = this.yearRangeData;
-	
+	this.drawBars();
 
-	this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
+	
+	
+	
+	
+	
+	
+}	
+
+cgP.drawBars = function(){
+	this.yearGroup.selectAll("g").remove();
+	this.yearRanges = this.yearRangeData();
+	this.years = this.yearGroup.selectAll("g").data(this.yearRanges);
+	console.table(this.yearRanges);
+	this.years.enter().append("g").attr({
 		transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
-	});
+	})
+	this.years.exit().remove();
 	
+
 	//rect to outline year band
 	this.years.append("rect").attr({
 		x: 0,
 		y:0,
-		width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
+		width: function(d){return +self.scales.box(d.max-d.min)-self.scales.box.range()[0]-2},
 		height: 20,
 		class: "yearBar",
 		"stroke-dasharray":"2,1"
-		
+
 	});  
-	
+
 	this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
 		{"class":"year outlinesm", y:20-self.padding.font,
 		x:self.padding.font});
 	
-	/*
-	this.yearRanges = [];
-	var y = -1;
-	var lastI = -1;
-	$.each(this.data, function(i,d){
-		if(+d.year != y){
-			y = d.year;
-			var o = {};
-			o.min = i;
-			o.date = d.date;
-			self.yearRanges.push(o);
-			lastI = i;
-		}
-		
-	})  
-	
-	this.yearRanges = this.yearRanges.map(function(d,i){
-		I = (i == self.yearRanges.length-1) ? self.data.length : self.yearRanges[i+1].min;
-	
-		var ret = d;
-		ret.max = I;
-		console.log("index");
-		console.log(d);
-		return ret;
-	})
-	*/
-/*	this.years.append("polygon").attr("points", function(d){
-		var H = 20;
-		var gW = self.scales.box.rangeBand;
-		var poly=[
-			[0,0],
-			[self.scales.box.rangeBand()*(d.max-d.min-0.5),0],
-			[self.scales.box.rangeBand()*(d.max-d.min),H/2],
-			[self.scales.box.rangeBand()*(d.max-d.min-0.5),H],
-			[0,H]
-		]
-		
-		return poly.join(" ");
-	}).attr("class","yearBar") */
-	
-}		
-
-cgP.redrawBars = function(){
-		//create a group for each bar
-		this.bar.data(this.data)
-		
-		this.bar.enter().append("g")
-			.attr("class","bar")
-			.attr("transform", function(d,i){return "translate("+(self.scales.box(i))+","+0+")"})
-
-
-
-		//interest bar	
-		this.bar.append("rect")
-			.attr({
-				x:boxPad/2,
-			//	x: function(d,i){return self.scales.box(i)},
-				y: 0 ,
-				height: function(d){return self.barGroupH - self.scales.iy(d.paymentToInterest)},
-				width: this.scales.box.rangeBand()-boxPad,
-				"class": "interest"
-			})
-
-		//principle bar
-		this.bar.append("rect")
-			.attr({
-				x:boxPad/2,
-			//	x: function(d,i){return self.scales.box(i)},
-				y: function(d){  return self.barGroupH - self.scales.iy(d.paymentToInterest) },
-			//	y:37,
-			//	height: 20,
-				height: function(d){return self.barGroupH - self.scales.iy(d.paymentToPrinciple)},
-				width: this.scales.box.rangeBand()-boxPad,
-				"class": "principle",
-			})
-
-
-		this.yearRanges = this.yearRangeData;
-
-
-		this.years = this.yearGroup.selectAll("g").data(this.yearRanges).enter().append("g").attr({
-			transform: function(d){return "translate("+self.scales.box(d.min)+",0)" }
-		});
-
-		//rect to outline year band
-		this.years.append("rect").attr({
-			x: 0,
-			y:0,
-			width: function(d){return self.scales.box.rangeBand()*(d.max-d.min)-2},
-			height: 20,
-			class: "yearBar",
-			"stroke-dasharray":"2,1"
-
-		});  
-
-		this.years.append("text").text(function(d){return  d.date.getFullYear();}).attr(
-			{"class":"year outlinesm", y:20-self.padding.font,
-			x:self.padding.font});
-
 }
 
 cgP.yearRangeData = function(){
@@ -518,11 +405,9 @@ cgP.yearRangeData = function(){
 
 cgP.buildSliders = function(){
 	this.buttonParams = [
-	{name: "Economy", price:15000, icon:"blank.svg"},
-	{name: "Midsized", price:25000, icon:"blank.svg"},
-	{name: "Luxury", price:50000, icon:"blank.svg"}]
-	
-	
+	{name: "Economy", price:"$15,000", icon:"icon_18516.svg"},
+	{name: "Midsized", price:"$25,000", icon:"icon_18509.svg"},
+	{name: "Luxury", price:"$50,000", icon:"icon_18564.svg"}]
 	
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
 	this.container.append("div").attr({
@@ -532,17 +417,17 @@ cgP.buildSliders = function(){
 		.attr({
 			"class": function(d){return "carButton "+d.name},
 			"type":function(d){return d.name}
-			}).html(function(d){return d.name});
+			}).html(function(d){return "<img class = 'carIcon' width ='100px' src = IMG/"+d.icon+"> "+d.name+"<br /> "+d.price});
 	
 	$(".carButton").button().click(function( event ) {
 		var type = $(this).attr("type");
-		console.log(type);
+		//console.log(type);
 		$(".carButton").each(function(){
 			check = $(this).attr("type") == type;
 			$(this).toggleClass("car-selected", check);
 		});
 		self.amParams.balance = self.cars[type];
-		console.log(self.amParams);
+		//console.log(self.amParams);
 		self.redraw()
 	});
 	
@@ -589,13 +474,14 @@ cgP.buildSliders = function(){
 		min: self.sliderP.contribution.min,
 		max: self.sliderP.contribution.max,
 		value: self.amParams.contrib,
+		step: 50,
 		slide: function(ev, ui){
-			console.log(ui.handle);
+			//console.log(ui.handle);
 			$(".tooltip").css({
 				"left": self.sliderScales.contribution(ui.value),
 				"top": $(ui.handle).offset().top
 			}).html("$"+ui.value)
-			//setTimeout(moveTip(ui), 15);
+	
 			
 			
 		},
@@ -623,7 +509,7 @@ cgP.buildSliders = function(){
 		step: 1,
 		value: self.amParams.rate,
 		slide: function(ev, ui){
-			console.log("rateChange")
+		
 			$(".tooltip").css({
 				"left": self.sliderScales.rate(ui.value),
 				"top": $(ui.handle).offset().top
@@ -634,7 +520,7 @@ cgP.buildSliders = function(){
 		stop: function(ev,ui){
 			$(this).find(".ui-slider-handle").text(ui.value+"%");
 			hideTip();
-			console.log(self.amParams);
+			//console.log(self.amParams);
 			self.redraw();
 		}
 	}).find("a").html(self.amParams.rate+"%");
@@ -660,7 +546,7 @@ cgP.buildSliders = function(){
 //	txtLeft = 0;
 //	rectLeft = 55;
 	
-	this.smLegend = this.barGroup.append("g").attr({
+/*	this.smLegend = this.barGroup.append("g").attr({
 		class: "legend",
 		transform: "translate("+(this.innerRight+legendPad)+","+legendPad+")"
 	})
@@ -694,7 +580,7 @@ cgP.buildSliders = function(){
 		y: rectSize-2,
 		x: txtLeft,
 		"class":"legendText"
-	}).text("Principle")
+	}).text("Principle") */
 
 	
 
@@ -704,6 +590,7 @@ cgP.redraw = function(){
 	this.updateScales();
 	this.updateAxes();
 	this.drawLines();
+	this.drawBars();
 }
 
 

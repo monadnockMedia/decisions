@@ -64,7 +64,8 @@ svg .bar {
   stroke: #ad1aac;
 }
 .barBox {
-  fill: rgba(173, 26, 172, 0.2);
+  fill: url(#diagonalHatch);
+  fill-opacity: 0.3;
 }
 path {
   shape-rendering: crispEdges;
@@ -266,4 +267,61 @@ line.principle {
 }
 .legendText {
   font-size: 12px;
+}
+.carIcon {
+  float: left;
+}
+#warnWrap {
+  position: absolute;
+  left: 140px;
+  top: 40px;
+}
+#warning {
+  -webkit-animation: warning 5s infinite;
+  -webkit-transition: all 0.5s;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: rgba(173, 26, 172, 0.5);
+  border-radius: 10px;
+  color: white;
+  overflow: hidden;
+}
+#warning.inactive {
+  -webkit-transform: scale(0.5);
+  width: 120px;
+}
+#warning.active {
+  -webkit-transform: scale(1);
+  width: 420px;
+}
+#warning svg {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#warning svg path {
+  fill: #c5299b;
+  stroke: black;
+  shape-rendering: optimizeSpeed;
+}
+#warning p {
+  padding: 0;
+  margin: 0;
+  font-family: label;
+  margin-right: 10px;
+  width: 400px;
+}
+@-webkit-keyframes warning {
+  0% {
+    box-shadow: 0 0 0px #e272c4;
+  }
+  15% {
+    box-shadow: 0 0 20px 4px #e272c4;
+  }
+  30% {
+    box-shadow: 0 0 0px #e272c4;
+  }
+  100% {
+    box-shadow: 0 0 0px #e272c4;
+  }
 }

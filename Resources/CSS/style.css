@@ -169,6 +169,13 @@ svg text.hidden {
   font-size: 1.3em;
   text-shadow: 2px 3px 3px black;
 }
+.savingsSliders .slider {
+  margin-top: 2.25em;
+}
+.savingsSliders .slider:before {
+  margin-left: 0px;
+  top: -1.5em;
+}
 .buttons:before {
   position: absolute;
   width: 120px;

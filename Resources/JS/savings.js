@@ -28,7 +28,7 @@ function savingsGraph( sel, _data ){
 	this.w = this.stripPx(this.container.style("width"));
 	this.h = this.stripPx(this.container.style("height"));
 	this.padding = {
-		left: 85,
+		left: 65,
 		right: 40,
 		top: 30,
 		bottom: 50
@@ -95,6 +95,10 @@ function savingsGraph( sel, _data ){
 		y: this.h - this.padding.bottom/3
 	})
 	this.drawLines();
+	
+	
+	var ww = $("<div id='warnWrap'/>")
+	$("body").append(ww.load("warning.html .savings").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
 }
 
 lgp = savingsGraph.prototype;

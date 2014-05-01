@@ -1,1 +1,1 @@
-var fvd,lg,toggle=!1;$(function(){makeGraph();$("#switch").click(function(){toggle=!toggle;$("#chart").html(" ");makeGraph()})});var makeGraph=function(){lg=toggle?new carGraph("#chart",fvd):new savingsGraph("#chart",fvd)};
+var fvd,lg,toggle=!0;$(function(){makeGraph();$("#switch").click(function(){toggle=!toggle;$("#chart").html(" ");makeGraph()})});var makeGraph=function(){lg=toggle?new carGraph("#chart",fvd):new savingsGraph("#chart",fvd)};

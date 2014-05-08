@@ -37,12 +37,13 @@ body {
   background-repeat: none;
 }
 #chart {
-  width: 800px;
+  width: 90%;
   height: 550px;
   background-color: lightsteelblue;
   margin-right: auto;
   margin-left: auto;
-  background-color: rgba(0, 0, 0, 0.8);
+  background-color: rgba(16, 6, 159, 0.5);
+  box-shadow: inset 0 -20px 200px #000000, inset 0 -60px 200px #000000;
 }
 .axis path {
   stroke: #ffffff;
@@ -56,8 +57,15 @@ body {
 .glow domain {
   visibility: hiddne;
 }
+.bevel {
+  filter: url(#Bevel2);
+}
 svg .bar {
   stroke: #ad1aac;
+}
+.barBox {
+  fill: url(#diagonalHatch);
+  fill-opacity: 0.3;
 }
 path {
   shape-rendering: crispEdges;
@@ -78,15 +86,42 @@ path {
 .line.area {
   fill: rgba(197, 41, 155, 0.5);
   fill: url(#diagonalHatch);
-  stroke: none;
+  stroke: white;
+  visibility: visible;
 }
 .line.total {
   stroke-width: 3px;
-  stroke: #10069f;
+  stroke: #c5299b;
+  visibility: visible;
 }
 .line.balance {
-  stroke: #ad1aac;
+  stroke: white;
   stroke-width: 3px;
+}
+.outline {
+  filter: url(#outline);
+}
+.outlinesm {
+  filter: url(#outlinesm);
+}
+#toPrinciple {
+  visibility: hidden;
+}
+circle.balance {
+  fill: white;
+  stroke: white;
+  visibility: hidden;
+}
+circle.total {
+  fill: #c5299b;
+  stroke: #c5299b;
+  visibility: hidden;
+}
+.linelabel {
+  font-size: .4em;
+}
+.lifted {
+  filter: url(#drop);
 }
 #diagonalHatch > path {
   stroke: rgba(164, 219, 232, 0.6);
@@ -134,6 +169,13 @@ svg text.hidden {
   font-size: 1.3em;
   text-shadow: 2px 3px 3px black;
 }
+.savingsSliders .slider {
+  margin-top: 2.25em;
+}
+.savingsSliders .slider:before {
+  margin-left: 0px;
+  top: -1.5em;
+}
 .buttons:before {
   position: absolute;
   width: 120px;
@@ -162,4 +204,131 @@ svg text.hidden {
 .tooltip {
   color: #ffffff;
   font-family: Arial;
+}
+.payment {
+  fill: #c5299b;
+  stroke: none;
+}
+.interest {
+  fill: url(#diagonalHatch);
+  stroke: none;
+  stroke: #a4dbe8;
+  fill: rgba(164, 219, 232, 0.5);
+  background-color: rgba(164, 219, 232, 0.5);
+  border: 1px solid #a4dbe8;
+}
+line.interest {
+  fill: url(#diagonalHatch);
+}
+.principle {
+  stroke: none;
+  stroke: #c5299b;
+  fill: rgba(197, 41, 155, 0.5);
+  background-color: rgba(197, 41, 155, 0.5);
+  border: 1px solid #c5299b;
+}
+.year {
+  font-size: 11pt;
+  fill: white ;
+}
+.month {
+  font-size: 7pt;
+  fill: white ;
+  stroke: none;
+}
+.yearBar {
+  fill: rgba(255, 255, 255, 0.3);
+  stroke: rgba(0, 0, 0, 0);
+  stroke-width: 2px;
+}
+.bar {
+  stroke: none;
+}
+line.principle {
+  stroke-width: 6px;
+}
+#legend {
+  -webkit-box-sizing: border-box;
+  background-color: rgba(16, 6, 159, 0.5);
+  padding: .25em;
+  width: 100%;
+  box-shadow: inset 0 -5px 20px #000000;
+  font-family: label;
+  color: white;
+}
+#legend .key {
+  margin-left: 1em;
+  margin-right: .25em;
+  display: inline-block;
+  width: 1.25em;
+  height: 1.25em;
+}
+#legend .key.payment {
+  fill: red;
+}
+#legend p {
+  margin: 0;
+  display: inline-block;
+  line-height: 1.25em;
+  margin-right: .5em;
+}
+.legendText {
+  font-size: 12px;
+}
+.carIcon {
+  float: left;
+}
+#warnWrap {
+  position: absolute;
+  left: 140px;
+  top: 40px;
+}
+#warning {
+  -webkit-animation: warning 5s infinite;
+  -webkit-transition: all 0.5s;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: rgba(173, 26, 172, 0.5);
+  border-radius: 10px;
+  color: white;
+  overflow: hidden;
+}
+#warning.inactive {
+  -webkit-transform: scale(0.5);
+  width: 120px;
+}
+#warning.active {
+  -webkit-transform: scale(1);
+  width: 420px;
+}
+#warning svg {
+  float: left;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+#warning svg path {
+  fill: #c5299b;
+  stroke: black;
+  shape-rendering: optimizeSpeed;
+}
+#warning p {
+  padding: 0;
+  margin: 0;
+  font-family: label;
+  margin-right: 10px;
+  width: 400px;
+}
+@-webkit-keyframes warning {
+  0% {
+    box-shadow: 0 0 0px #e272c4;
+  }
+  15% {
+    box-shadow: 0 0 20px 4px #e272c4;
+  }
+  30% {
+    box-shadow: 0 0 0px #e272c4;
+  }
+  100% {
+    box-shadow: 0 0 0px #e272c4;
+  }
 }

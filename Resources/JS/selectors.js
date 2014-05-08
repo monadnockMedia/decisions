@@ -10,10 +10,26 @@ $(function(){
 		$("#chart").html(" ")
 		makeGraph();
 	})
+	
+	
+
+/*	  var path = './';
+	  var fs = require('fs');
+
+	  fs.watch(path, [], function() {
+	    if (location)
+	      location.reload(false);
+	  });*/
+
+	
+	
+	
+	
 })
 
 var makeGraph = function(){
-		window.lg = (toggle) ? new carGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
-	
+	lg = (toggle) ? new carGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
+		//lg = new carGraph("#chart",fvd);
+		
 }
 

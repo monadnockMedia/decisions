@@ -84,7 +84,7 @@ function carGraph( sel ){
 	this.buildSliders();
 	
 	var ww = $("<div id='warnWrap'/>")
-	$("body").append(ww.load("warning.html .car").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
+	$(sel).append(ww.load("warning.html .car").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
 	
 }
 

@@ -98,7 +98,7 @@ function savingsGraph( sel, _data ){
 	
 	
 	var ww = $("<div id='warnWrap'/>")
-	$("body").append(ww.load("warning.html .savings").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
+	$(sel).append(ww.load("warning.html .savings").click(function(){$(this).find("div").toggleClass(" active inactive ")}))
 }
 
 lgp = savingsGraph.prototype;

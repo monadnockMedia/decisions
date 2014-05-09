@@ -1,0 +1,136 @@
+<img id="car_screen1" src="IMAGES/car/CarGirl1.png" class="comicImg" width="800" height="0" targetH="200"></div>
+<div id="car_screen1" class='dialog small' anim='{"timing":"1", "top":"0", "left":"250"}'>You got a steady job and can finally</div>
+<div id="car_screen1" class='dialog small' anim='{"timing":"2", "top":"50", "left":"660"}'><br/><span class='large'>BUY A CAR</span></div>
+<div id="car_screen1" class='circleText large' style="top:290px;left:630px;line-height:275px !important;" time="3">YES!</div>
+<div id="car_screen1" class='nextBtn' style="top:625px;left:605px;" time="4">Next</div>
+
+<img id="car_screen2" src="IMAGES/car/CarGirl1.png" class="fadeImg"></div>
+<img id="car_screen2" src="IMAGES/car/CarGirl2.png" class="comicImg" width="800" height="0" targetH="0"></div>
+<div id="car_screen2" class='circleText smaller' style="top:50px;left:80px;" time="1"><br/>WHICH<br/><br/><span class="large">CAR</span><br/><span class="smaller" style="line-height:38px">DO YOU<br/>WANT?</span></div>
+<div id="car_screen2" class='dialog small' anim='{"timing":"2", "top":"325", "left":"680"}'></div>
+<div id="car_screen2" class='nextBtn small' style="top:370px;left:50px;" time="3">Economy<br/>$15,000</div>
+<div id="car_screen2" class='nextBtn small' style="top:500px;left:50px;" time="4">Midsized<br/>$25,000</div>
+<div id="car_screen2" class='nextBtn small' style="top:630px;left:50px;" time="5">Luxury<br/>$50,000</div>
+
+
+<div id="car_screen3" class="titleChart">
+	HOW MUCH WILL YOUR<br/>
+	CAR COST YOU?
+</div>
+<div id="car_screen3" class='nextBtn done' style="top:694px;left:675px;" time="1">Done</div>
+<span id="car_screen3" style="width:1024px; height:768px; display: inline-block; overflow:visible;">
+		<svg width="0" height="0">
+			<defs>
+				<filter id="Bevel2" filterUnits="objectBoundingBox" x="-10%" y="-10%" width="150%" height="150%">
+
+						<feGaussianBlur in="SourceAlpha" stdDeviation="0.5" result="blur"/>
+						<feSpecularLighting in="blur" surfaceScale="2" specularConstant="0.5" specularExponent="10" result="specOut" lighting-color="white">
+							<fePointLight x="-9000" y="9000" z="5000"/>
+						</feSpecularLighting>
+						<feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut2"/>
+						<feComposite in="SourceGraphic" in2="specOut2" operator="arithmetic" k1="10" k2="1" k3="1" k4="0" result="litPaint" />
+					</filter>
+
+	<filter id="drop" inkscape:label="filter1">
+		<feGaussianBlur in ="SourceAlpha" stdDeviation="3"  id="feGaussianBlur3759" />
+		<feOffset dx="-5" dy="5" id="feOffset3765"result="result1" />
+		<feComponentTransfer in1 = "result1" result="result2">
+
+			<feFuncA type="linear" slope="2"></feFuncA>
+		</feComponentTransfer>
+
+		<feMerge id="feMerge3767" result="result1">
+
+			<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+			<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+		</feMerge>
+	</filter>
+	<filter id="drop2" inkscape:label="filter1">
+		<feGaussianBlur in ="SourceAlpha" stdDeviation="1"  id="feGaussianBlur3759" />
+		<feOffset dx="1" dy="1" id="feOffset3765"result="result1" />
+		<feComponentTransfer in1 = "result1" result="result2">
+
+			<feFuncA type="linear" slope="2"></feFuncA>
+		</feComponentTransfer>
+
+		<feMerge id="feMerge3767" result="result1">
+
+			<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+			<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+		</feMerge>
+	</filter>			
+
+			<filter id="glow1" height="130%">
+		    	<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blurred"></feGaussianBlur>
+				<feComponentTransfer in1 = "blurred" result="colored">
+
+				        <feFuncA type="linear" slope="2"></feFuncA>
+				    </feComponentTransfer>
+				</filter>
+
+
+				<filter
+				       id="outline"
+				       color-interpolation-filters="sRGB">
+						<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="1" />
+				      <feGaussianBlur
+				         id="feGaussianBlur2997"
+				         stdDeviation="1"
+				         in="fat"
+				         result="blurred" />
+
+				      <feComposite
+				         id="feComposite2999"
+				         in2="blurred"
+				         result="mix"
+				         operator="arithmetic"
+				         in="SourceGraphic"
+				         k2="1"
+				         k3="10" />
+				      <feComposite
+				         id="feComposite3001"
+				         in2="mix"
+				         k2="1"
+				         operator="in"
+				         in="mix"
+				         result="result4" />
+				    </filter>
+
+
+					<filter
+					       id="outlinesm"
+					       color-interpolation-filters="sRGB">
+							<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="0" />
+					      <feGaussianBlur
+					         id="feGaussianBlur2997"
+					         stdDeviation="1"
+					         in="fat"
+					         result="blurred" />
+
+					      <feComposite
+					         id="feComposite2999"
+					         in2="blurred"
+					         result="mix"
+					         operator="arithmetic"
+					         in="SourceGraphic"
+					         k2="1"
+					         k3="2" />
+
+					    </filter>
+
+
+
+
+				<pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90)">
+
+				  <path d="M-1,1 l2,-2
+				           M0,4 l4,-4
+				           M3,5 l2,-2" ></path>
+				    <rect class="patternFill" x="0" y="0" width="100%" height="100%" fill="#ff0000"></rect>
+				 </pattern></defs>
+
+			</svg>
+	<div id="chart">
+		
+	</div>
+</span>

@@ -42,7 +42,6 @@
 .ui-helper-clearfix {
   min-height: 0;
   /* support: IE7 */
-
 }
 .ui-helper-zfix {
   width: 100%;
@@ -88,7 +87,6 @@
   padding: .5em .5em .5em .7em;
   min-height: 0;
   /* support: IE7 */
-
 }
 .ui-accordion .ui-accordion-icons {
   padding-left: 2.2em;
@@ -127,7 +125,6 @@
   text-align: center;
   overflow: hidden;
   /* removes extra width in IE */
-
 }
 .ui-button,
 .ui-button:link,
@@ -459,7 +456,6 @@ button.ui-button::-moz-focus-inner {
   padding: 0;
   width: 100%;
   /* support: IE10, see #8844 */
-
   list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
 }
 .ui-menu .ui-menu-divider {
@@ -476,7 +472,6 @@ button.ui-button::-moz-focus-inner {
   line-height: 1.5;
   min-height: 0;
   /* support: IE7 */
-
   font-weight: normal;
 }
 .ui-menu .ui-menu-item a.ui-state-focus,
@@ -714,13 +709,11 @@ button.ui-button::-moz-focus-inner {
 /* TR overrides */
 .ui-spinner .ui-icon-triangle-1-s {
   /* need to fix icons sprite */
-
   background-position: -65px -16px;
 }
 .ui-tabs {
   position: relative;
   /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
-
   padding: .2em;
 }
 .ui-tabs .ui-tabs-nav {
@@ -762,7 +755,6 @@ button.ui-button::-moz-focus-inner {
   background: none;
 }
 .ui-tooltip {
-  padding: 8px;
   position: absolute;
   z-index: 9999;
   max-width: 300px;
@@ -810,10 +802,10 @@ body .ui-tooltip {
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-  border: 1px solid #d3d3d3;
-  background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
-  font-weight: normal;
-  color: #555555;
+  border: 1px solid #d3d3d3 !important;
+  background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x !important;
+  font-weight: normal !important;
+  color: #555555 !important;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -906,7 +898,6 @@ body .ui-tooltip {
 .ui-state-disabled .ui-icon {
   filter: alpha(opacity=35);
   /* For IE8 - See #6059 */
-
 }
 /* Icons
 ----------------------------------*/
@@ -1500,8 +1491,6 @@ body .ui-tooltip {
   filter: alpha(opacity=30);
 }
 .ui-widget-shadow {
-  margin: -8px 0 0 -8px;
-  padding: 8px;
   background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
   opacity: .3;
   filter: alpha(opacity=30);

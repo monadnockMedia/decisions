@@ -417,7 +417,7 @@ cgP.buildSliders = function(){
 		.attr({
 			"class": function(d){return "carButton "+d.name},
 			"type":function(d){return d.name}
-			}).html(function(d){return "<img class = 'carIcon' width ='100px' src = IMG/"+d.icon+"> "+d.name+"<br /> "+d.price});
+			}).html(function(d){return "<img class = 'carIcon' width ='100px' src = IMAGES/"+d.icon+"> "+d.name+"<br /> "+d.price});
 	
 	$(".carButton").button().click(function( event ) {
 		var type = $(this).attr("type");

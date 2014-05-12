@@ -225,7 +225,7 @@ var animateScenario = function() {
 			   opacity:{
 			      	start: 0,
 			      	stop: 100,
-			      	time: parseInt($(this).attr("time")),
+			      	time: parseFloat($(this).attr("time")),
 			      	duration: 0.5,
 			      	effect:'sineOut'
 			   },
@@ -323,14 +323,14 @@ var animateScenario = function() {
 				   opacity:{
 				      start: 0,
 				      stop: 100,
-				      time: parseInt($(this).attr("time")),
+				      time: parseFloat($(this).attr("time")),
 				      duration: 0.25,
 				      effect:'easeInOut'
 				   },
 				   transform:{
 				      start: 'rotate(0deg) scale( 0.1 )',
 				      stop: 'rotate(720deg) scale( 1 )',
-				      time: parseInt($(this).attr("time")),
+				      time: parseFloat($(this).attr("time")),
 				      duration: 1,
 				      effect:'elasticOut'
 				   },
@@ -352,9 +352,9 @@ var animateScenario = function() {
 			   left:{
 			      start: 1280,
 			      stop: anim.left,
-			      time: parseInt(anim.timing),
+			      time: parseFloat(anim.timing),
 			      units: 'px',
-			      duration: 0.5,
+			      duration: 1,
 			      effect:'sineOut'
 			   },
 			   onStop: function( elem ) {
@@ -370,7 +370,7 @@ var animateScenario = function() {
 			   opacity:{
 			      	start: 0,
 			      	stop: 100,
-			      	time: parseInt($(this).attr("time")),
+			      	time: parseFloat($(this).attr("time")),
 			      	duration: 0.5,
 			      	effect:'sineOut'
 			   },

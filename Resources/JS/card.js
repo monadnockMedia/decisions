@@ -407,8 +407,6 @@ cgP.buildSliders = function(){
 	
 		var int = (num-rem)/12;
 		console.log("remainder",rem);
-		var f = new Fraction(rem, 12);
-		console.log(f.toString(),f);
 		return '<span class = "int">'+int+'</span><span class = "fraction"><span class="top">'+rem+'</span><span class="bottom">12</span></span>';
 	
 		

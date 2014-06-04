@@ -110,7 +110,7 @@ var initGraph = function(){
 			break;
 		
 		case "couch":
-			lg = new savingsGraph("#chart",fvd);
+			lg = new cardGraph("#chart",fvd);
 			break;
 		case "car":
 			lg = new carGraph("#chart",fvd);
@@ -314,17 +314,8 @@ var animateScenario = function() {
 		});
 	}
 	
-<<<<<<< HEAD:Resources/JS/test-selectors.js
-	
-})
-
-var makeGraph = function(){
-	lg = (toggle) ? new cardGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
-		//lg = new carGraph("#chart",fvd);
-=======
 			
 		
->>>>>>> FETCH_HEAD:Resources/JS/selectors.js
 		
 		//Animate circles onto screen
 			$(".circleText").each( function( i, v ) {

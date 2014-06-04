@@ -15,6 +15,8 @@ function cardGraph( sel ){
 	        balance: 1000,
 	        contrib: 25
 	    }
+	this.amParams.length = finance.calculateMonths(this.amParams.balance, this.amParams.rate, this.amParams.contrib);
+	this.sliderP.term.max = this.amParams.length;
 	this.amortize();
 	//set up viewport size, etc.
 	this.container = d3.select(sel);
@@ -181,8 +183,6 @@ cgP.updateAxes = function(){
 }
 cgP.amortize = function(){
 	with (this.amParams){
-		this.amParams.length = finance.calculateMonths(balance, rate, contrib);
-		this.sliderP.term.max = this.amParams.length;
 		var amort = finance.calculateAmortization(balance, length, rate);
 		var dOff;
 		amort.forEach(function(o,i){
@@ -199,9 +199,11 @@ cgP.amortize = function(){
 			}
 			o.totalPaid = o.cumToPrinciple + o.interest;
 		})
+		this.amParams.contrib = amort[amort.length-1].payment;
 		this.data = amort;
 	}
 }
+
 
 cgP.addLines = function(){
 	
@@ -402,20 +404,24 @@ cgP.buildSliders = function(){
 	
 	var makeFraction = function( num ){
 		var rem = num%12;
-		if (rem == 0){
-			return num;
-		}else{
-			var int = (num-rem)/12;
-			console.log("remainder",rem);
-			var f = new Fraction(rem, 12);
-			console.log(f.toString(),f);
-			return '<span class = "int">'+int+'</span><span class = "fraction"><span class="top">'+f.numerator+'</span><span class="bottom">'+f.denominator+'</span></span>';
-		}
+	
+		var int = (num-rem)/12;
+		console.log("remainder",rem);
+		var f = new Fraction(rem, 12);
+		console.log(f.toString(),f);
+		return '<span class = "int">'+int+'</span><span class = "fraction"><span class="top">'+rem+'</span><span class="bottom">12</span></span>';
+	
 		
 	}
 	
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
-
+	
+	this.container.append("div").attr().append("h1").attr({
+		class: "card payment",
+		title: "Monthly Payment",
+		style:  "margin-left:"+this.padding.left+"px"
+	}).text(finance.format(this.amParams.contrib, 'USD'))
+	
 	this.termSlider = this.container.append("div").attr({
 		"class": "slider term card",
 		title: "Years to Pay"
@@ -466,8 +472,8 @@ cgP.buildSliders = function(){
 		stop: function(ev,ui){
 			$(this).find(".ui-slider-handle").html(makeFraction(ui.value));
 			hideTip();
+			self.amParams.length = ui.value;
 			self.redraw();
-			self.amParams.contrib = ui.value;
 		}
 	}).find("a").html(makeFraction(self.sliderP.term.max));
 	
@@ -543,6 +549,7 @@ cgP.redraw = function(){
 	this.updateAxes();
 	this.drawLines();
 	this.drawBars();
+	$(".card.payment").html(finance.format(this.amParams.contrib, 'USD'));
 }
 
 

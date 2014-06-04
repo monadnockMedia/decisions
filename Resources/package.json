@@ -1,25 +1,24 @@
 {
   "main": "index.html",
-  "name": "nw-demo",
-  "description": "demo app of node-webkit",
+  "name": "Decisions",
+  "description": "FedApp",
   "version": "0.1.0",
-  "keywords": [ "demo", "node-webkit" ],
+  "keywords": [ "monadnock", "node-webkit" ],
   "window": {
-    "title": "node-webkit demo",
-    "icon": "link.png",
+    "title": "Decisions Calculator",
     "toolbar": true,
     "frame": true,
+	"fullscreen":false,
     "width": 1024,
     "height": 768,
-    "position": "mouse",
-    "min_width": 400,
-    "min_height": 200,
-    "max_width": 800,
-    "max_height": 600,
-    "kiosk" : false
+	"position": "center",
+	"kiosk":false
+  },"dependencies": {
+     
   },
   "webkit": {
-    "plugin": false
-  },
-  "chromium-args": "--remote-debugging-port=9222"
+    "plugin": true,
+	"java": true
+	
+  }
 }

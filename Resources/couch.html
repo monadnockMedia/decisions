@@ -1,0 +1,138 @@
+<img id="couch_screen1" src="IMAGES/couch/CouchPotato1.png" class="comicImg" width="800" height="0" targetH="200"></div>
+<div id="couch_screen1" class='dialog small' anim='{"timing":"1", "top":"-55", "left":"175"}'>You want to spruce up your apartment.</div>
+<div id="couch_screen1" class='dialog small' anim='{"timing":"1.5", "top":"20", "left":"375"}'>You find<span class='large'> THE PERFECT COUCH.</span></div>
+<div id="couch_screen1" class='dialog small' anim='{"timing":"2", "top":"95", "left":"575"}'>It costs $1,000.</div>
+<div id="couch_screen1" class='dialog small' anim='{"timing":"2.5", "top":"165", "left":"525"}'>You're short on cash,<br/>so you pay with a....</div>
+<div id="couch_screen1" class='circleText large' style="top:350px;left:600px;" time="4"><br/>Credit<br/>Card</div>
+<div id="couch_screen1" class='nextBtn' style="top:650px;left:670px;" time="4.5">Next</div>
+
+<img id="couch_screen2" src="IMAGES/couch/CouchPotato1.png" class="fadeImg"></div>
+<img id="couch_screen2" src="IMAGES/couch/CouchPotato2.png" class="comicImg" width="800" height="0" targetH="400"></div>
+<div id="couch_screen2" class='circleText smaller' style="top:00px;left:175px;" time="1"><span class="smaller" style="margin-top:15px; line-height:38px;"><p style="margin-top:60px;">The<br/>couch costs<br/>$1,000</span></p></div>
+<div id="couch_screen2" class='circleText smaller' style="top:00px;left:457px;" time="1.5"><span class="smaller" style="margin-top:15px; line-height:38px;"><p style="margin-top:40px;">The card's<br/>annual percentage<br/>rate is<br/>20%</span></p></div>
+<div id="couch_screen2" class='circleText smaller' style="top:00px;left:740px;" time="2"><span class="smaller" style="margin-top:15px; line-height:38px;"><p style="margin-top:47px;">The<br/>minimum<br/>payment is<br/>$25</span></p></div>
+<div id="couch_screen2" class='dialog small' anim='{"timing":"3", "top":"250", "left":"464"}'>How much will your</div>
+<div id="couch_screen2" class='dialog small' anim='{"timing":"3.5", "top":"300", "left":"468"}'>couch actually cost</div>
+<div id="couch_screen2" class='dialog small' anim='{"timing":"4", "top":"390", "left":"434"}'><span class="large" style="font-size:76px">AFTER IT'S PAID OFF?</span></div>
+<div id="couch_screen2" class='nextBtn' style="top:600px;left:585px;" time="5">Next</div>
+
+<div id="couch_screen3" class="titleChart">
+	HOW MUCH WILL YOUR COUCH ACTUALLY COST?
+</div>
+<div id="couch_screen3" class='nextBtn done' style="top:700px;left:675px;" time="1">Done</div>
+<span id="couch_screen3" style="width:1024px; height:768px; display: inline-block; overflow:visible;">
+		<svg width="0" height="0">
+			<defs>
+				<filter id="Bevel2" filterUnits="objectBoundingBox" x="-10%" y="-10%" width="150%" height="150%">
+
+						<feGaussianBlur in="SourceAlpha" stdDeviation="0.5" result="blur"/>
+						<feSpecularLighting in="blur" surfaceScale="2" specularConstant="0.5" specularExponent="10" result="specOut" lighting-color="white">
+							<fePointLight x="-9000" y="9000" z="5000"/>
+						</feSpecularLighting>
+						<feComposite in="specOut" in2="SourceAlpha" operator="in" result="specOut2"/>
+						<feComposite in="SourceGraphic" in2="specOut2" operator="arithmetic" k1="10" k2="1" k3="1" k4="0" result="litPaint" />
+					</filter>
+
+	<filter id="drop" inkscape:label="filter1">
+		<feGaussianBlur in ="SourceAlpha" stdDeviation="3"  id="feGaussianBlur3759" />
+		<feOffset dx="-5" dy="5" id="feOffset3765"result="result1" />
+		<feComponentTransfer in1 = "result1" result="result2">
+
+			<feFuncA type="linear" slope="2"></feFuncA>
+		</feComponentTransfer>
+
+		<feMerge id="feMerge3767" result="result1">
+
+			<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+			<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+		</feMerge>
+	</filter>
+	<filter id="drop2" inkscape:label="filter1">
+		<feGaussianBlur in ="SourceAlpha" stdDeviation="1"  id="feGaussianBlur3759" />
+		<feOffset dx="1" dy="1" id="feOffset3765"result="result1" />
+		<feComponentTransfer in1 = "result1" result="result2">
+
+			<feFuncA type="linear" slope="2"></feFuncA>
+		</feComponentTransfer>
+
+		<feMerge id="feMerge3767" result="result1">
+
+			<feMergeNode inkscape:collect="always" id="feMergeNode3771" in="result2" />
+			<feMergeNode inkscape:collect="always" id="feMergeNode3769" in="SourceGraphic" />
+		</feMerge>
+	</filter>			
+
+			<filter id="glow1" height="130%">
+		    	<feGaussianBlur in="SourceGraphic" stdDeviation="3" result="blurred"></feGaussianBlur>
+				<feComponentTransfer in1 = "blurred" result="colored">
+
+				        <feFuncA type="linear" slope="2"></feFuncA>
+				    </feComponentTransfer>
+				</filter>
+
+
+				<filter
+				       id="outline"
+				       color-interpolation-filters="sRGB">
+						<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="1" />
+				      <feGaussianBlur
+				         id="feGaussianBlur2997"
+				         stdDeviation="1"
+				         in="fat"
+				         result="blurred" />
+
+				      <feComposite
+				         id="feComposite2999"
+				         in2="blurred"
+				         result="mix"
+				         operator="arithmetic"
+				         in="SourceGraphic"
+				         k2="1"
+				         k3="10" />
+				      <feComposite
+				         id="feComposite3001"
+				         in2="mix"
+				         k2="1"
+				         operator="in"
+				         in="mix"
+				         result="result4" />
+				    </filter>
+
+
+					<filter
+					       id="outlinesm"
+					       color-interpolation-filters="sRGB">
+							<feMorphology operator="dilate" in="SourceAlpha" result="fat" radius="0" />
+					      <feGaussianBlur
+					         id="feGaussianBlur2997"
+					         stdDeviation="1"
+					         in="fat"
+					         result="blurred" />
+
+					      <feComposite
+					         id="feComposite2999"
+					         in2="blurred"
+					         result="mix"
+					         operator="arithmetic"
+					         in="SourceGraphic"
+					         k2="1"
+					         k3="2" />
+
+					    </filter>
+
+
+
+
+				<pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(90)">
+
+				  <path d="M-1,1 l2,-2
+				           M0,4 l4,-4
+				           M3,5 l2,-2" ></path>
+				    <rect class="patternFill" x="0" y="0" width="100%" height="100%" fill="#ff0000"></rect>
+				 </pattern></defs>
+
+			</svg>
+	<div id="chart">
+		
+	</div>
+</span>

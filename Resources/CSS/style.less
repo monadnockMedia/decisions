@@ -14,7 +14,7 @@
 
 @font-face {
     font-family: 'sub-title';
-    src: url('../FONTS/gothamrnd-light-webfont.svg#gotham_roundedlight') format('svg');
+    src: url('../FONTS/gothamrnd-light-webfont.ttf') format('truetype');
     font-weight: normal;
     font-style: normal;
 }
@@ -33,15 +33,15 @@
 }
 body{
 	overflow:hidden;
-	background-color: gray;
-	background-image: url("../IMG/money_tunnel.png");
+	background-color: black;
 	width: 1024px;
 	height: 768px;
 	background-repeat: none;
+	margin: 0px !important;
 }
 #chart{
-	width: 90%;
-	height: 550px;
+	width: 92%;
+	height: 500px;
 	background-color: lightsteelblue;
 	margin-right:auto;
 	margin-left:auto;
@@ -68,7 +68,7 @@ body{
 	filter:url(#glow1);
 	}
 	& domain{
-		visibility: hiddne;
+		visibility: hidden;
 	}
 	
 
@@ -418,8 +418,8 @@ line.principle{
 @warnPad: 10px;
 #warnWrap{
 	position: absolute;
-	left: 140px;
-	top: 40px;
+	left: 120px;
+	top: 85px;
 }
 #warning{
 	-webkit-animation: warning 5s infinite;

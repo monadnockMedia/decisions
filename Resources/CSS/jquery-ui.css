@@ -762,7 +762,6 @@ button.ui-button::-moz-focus-inner {
   background: none;
 }
 .ui-tooltip {
-  padding: 8px;
   position: absolute;
   z-index: 9999;
   max-width: 300px;
@@ -810,10 +809,10 @@ body .ui-tooltip {
 .ui-state-default,
 .ui-widget-content .ui-state-default,
 .ui-widget-header .ui-state-default {
-  border: 1px solid #d3d3d3;
-  background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x;
-  font-weight: normal;
-  color: #555555;
+  border: 1px solid #d3d3d3 !important;
+  background: #e6e6e6 url(images/ui-bg_glass_75_e6e6e6_1x400.png) 50% 50% repeat-x !important;
+  font-weight: normal !important;
+  color: #555555 !important;
 }
 .ui-state-default a,
 .ui-state-default a:link,
@@ -1500,8 +1499,6 @@ body .ui-tooltip {
   filter: alpha(opacity=30);
 }
 .ui-widget-shadow {
-  margin: -8px 0 0 -8px;
-  padding: 8px;
   background: #aaaaaa url(images/ui-bg_flat_0_aaaaaa_40x100.png) 50% 50% repeat-x;
   opacity: .3;
   filter: alpha(opacity=30);

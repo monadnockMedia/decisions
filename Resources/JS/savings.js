@@ -205,7 +205,7 @@ lgp.buildSliders = function(){
 	});
 	this.sliderDiv.append("div").attr({
 		"class": "slider contribution",
-		title: "Contribution"
+		title: "Deposit"
 		
 		});
 	this.sliderDiv.append("div").attr(	{

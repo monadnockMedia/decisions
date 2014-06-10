@@ -244,8 +244,16 @@ svg text{
 .savingsSliders {
 
 	& .slider{
-		margin-top: 2.25em;
+		margin-top: 1.65em; /* 2.25em */
 		
+	}
+	
+	& .slider:before{
+		content: attr(title) ;
+		position:absolute;
+		margin-left: -95px;
+		top:-.25em;
+		.uiLabel;
 	}
 }
 
@@ -414,7 +422,7 @@ line.principle{
 #warnWrap{
 	position: absolute;
 	left: 140px;
-	top: 40px;
+	top: 90px;
 }
 #warning{
 	-webkit-animation: warning 5s infinite;

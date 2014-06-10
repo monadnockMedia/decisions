@@ -40,6 +40,7 @@
 .ui-helper-clearfix {
   min-height: 0;
   /* support: IE7 */
+
 }
 .ui-helper-zfix {
   width: 100%;
@@ -158,6 +159,7 @@
   padding: .5em .5em .5em .7em;
   min-height: 0;
   /* support: IE7 */
+
 }
 .ui-accordion .ui-accordion-icons {
   padding-left: 2.2em;
@@ -196,6 +198,7 @@
   text-align: center;
   overflow: visible;
   /* removes extra width in IE */
+
 }
 .ui-button,
 .ui-button:link,
@@ -525,6 +528,7 @@ button.ui-button::-moz-focus-inner {
   padding: 0;
   width: 100%;
   /* support: IE10, see #8844 */
+
   list-style-image: url(data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7);
 }
 .ui-menu .ui-menu-divider {
@@ -541,6 +545,7 @@ button.ui-button::-moz-focus-inner {
   line-height: 1.5;
   min-height: 0;
   /* support: IE7 */
+
   font-weight: normal;
 }
 .ui-menu .ui-menu-item a.ui-state-focus,
@@ -742,11 +747,13 @@ button.ui-button::-moz-focus-inner {
 /* TR overrides */
 .ui-spinner .ui-icon-triangle-1-s {
   /* need to fix icons sprite */
+
   background-position: -65px -16px;
 }
 .ui-tabs {
   position: relative;
   /* position: relative prevents IE scroll bug (element with position: relative inside container with overflow: auto appear as "fixed") */
+
   padding: .2em;
 }
 .ui-tabs .ui-tabs-nav {
@@ -949,6 +956,7 @@ body .ui-tooltip {
 .ui-state-disabled .ui-icon {
   filter: alpha(opacity=35);
   /* For IE8 - See #6059 */
+
 }
 /* Icons
 ----------------------------------*/

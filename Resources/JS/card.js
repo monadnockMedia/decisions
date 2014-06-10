@@ -412,6 +412,16 @@ cgP.buildSliders = function(){
 		
 	}
 	
+	var dateFilter = function ( num ){
+		var rem = num%12;
+		
+		var int = (num-rem)/12;
+		
+		//if(rem == 6) int+=0.5;
+		
+		return(int);
+	}
+	
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
 	
 	this.container.append("div").attr().append("h1").attr({
@@ -462,18 +472,18 @@ cgP.buildSliders = function(){
 			$(".tooltip").css({
 				"left": self.sliderScales.term(ui.value),
 				"top": $(ui.handle).offset().top
-			}).html(makeFraction(ui.value))
+			}).html(dateFilter(ui.value))
 	
 			
 			
 		},
 		stop: function(ev,ui){
-			$(this).find(".ui-slider-handle").html(makeFraction(ui.value));
+			$(this).find(".ui-slider-handle").html(dateFilter(ui.value));
 			hideTip();
 			self.amParams.length = ui.value;
 			self.redraw();
 		}
-	}).find("a").html(makeFraction(self.sliderP.term.max));
+	}).find("a").html(dateFilter(self.sliderP.term.max));
 	
 	this.sliderScales = {};
 	termOff = $(".slider.term").offset();

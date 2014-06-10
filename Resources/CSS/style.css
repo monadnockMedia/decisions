@@ -169,6 +169,18 @@ svg text.hidden {
   font-size: 1.3em;
   text-shadow: 2px 3px 3px black;
 }
+.slider.card {
+  margin-top: 1.5em;
+}
+.slider.card:before {
+  position: absolute;
+  margin-left: 0;
+  margin-top: -1.5em;
+  content: attr(title);
+  font-size: 1.3em;
+  text-shadow: 2px 3px 3px black;
+  color: white;
+}
 .card.payment {
   margin-top: 1.5em;
   font-size: 18pt;
@@ -204,6 +216,31 @@ svg text.hidden {
   font-size: 1.3em;
   text-shadow: 2px 3px 3px black;
   color: white;
+}
+.savingsSliders .slider {
+  margin-top: 2.25em;
+}
+.fraction,
+.top,
+.bottom {
+  padding: 0 3px;
+}
+.int {
+  font-size: 1.5em;
+  margin-top: -1.25em;
+  margin-left: .1em;
+}
+.fraction {
+  height: 3em;
+  padding-top: .5em;
+  display: inline-block;
+  text-align: center;
+  font-size: .9em;
+  line-height: 1.1em;
+}
+.fraction .bottom {
+  border-top: 1px solid #fff;
+  display: block;
 }
 .buttons:before {
   position: absolute;

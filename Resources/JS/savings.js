@@ -349,7 +349,7 @@ lgp.buildSliders = function(){
 	ageOff = $(".slider.age").offset();
 	ageW = $(".slider.age").width();
 	this.sliderScales.age = d3.scale.linear()
-		.range([ageOff.left,ageOff.left+rateW ])
+		.range([ageOff.left,ageOff.left+ageW ])
 		.domain([0,_self.datalength]);
 
 

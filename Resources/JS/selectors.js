@@ -8,6 +8,7 @@ var initiated;
 
 var scenario;
 var curScreen;
+var carType;
 
 var fvd;
 var lg;
@@ -27,6 +28,7 @@ $(function () {
 	//Happens on EVERY restart
 	loadIdle();
 	curScreen = 0;
+	startAnim();
 });
 
 // --------------------------- //
@@ -35,7 +37,7 @@ $(function () {
 //-- Click Event Handlers  -- //
 
 //Removes the attract loop and animates in the scenarioSelectBtns
-$("#attractLoop").click(function(e) {
+var startAnim = function() {
 	$( "#attractLoop" ).tween({
 	   opacity:{
 	      start: 100,
@@ -67,7 +69,7 @@ $("#attractLoop").click(function(e) {
 	}).play();
 	
 	$("#attractLoop").slideUp(500);
-});
+};
 
 //Select scenario from main menu buttons
 $(".scenarioSelectBtn").click(function(e) {
@@ -93,6 +95,18 @@ $(".scenarioSelectBtn").click(function(e) {
 //Next Button During Scenarios
 var bindNextBtn = function() {
 	$(".nextBtn").click(function(e) {
+		
+		if ($(this).hasClass("economy")) {
+			console.log("Economy");
+			carType = "Economy";
+		} else if ($(this).hasClass("midsize")) {
+			console.log("Midsized");
+			carType = "Midsized";
+		} else if ($(this).hasClass("luxury")) {
+			console.log("Luxury");
+			carType = "Luxury";
+		}
+		
 		console.log("NEXT Clicked");
 		curScreen++;
 		if (curScreen == 4) {
@@ -113,7 +127,7 @@ var initGraph = function(){
 			lg = new cardGraph("#chart",fvd);
 			break;
 		case "car":
-			lg = new carGraph("#chart",fvd);
+			lg = new carGraph("#chart", carType);
 			break;
 	}
 };

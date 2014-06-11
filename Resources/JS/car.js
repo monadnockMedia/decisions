@@ -544,6 +544,14 @@ cgP.buildSliders = function(){
 	
 	txtLeft = rectSize+this.padding.font;
 	rectLeft = 0;
+	
+	if (carType == "Economy") {
+		$(".carButton.Economy").addClass("car-selected");
+	} else if (carType == "Midsized") {
+		$(".carButton.Midsized").addClass("car-selected");
+	} else if (carType == "Luxury") {
+		$(".carButton.Luxury").addClass("car-selected");
+	}
 //	txtLeft = 0;
 //	rectLeft = 55;
 	

@@ -410,6 +410,7 @@ cgP.buildSliders = function(){
 	{name: "Luxury", price:"$50,000", icon:"icon_18564.svg"}]
 	
 	this.container.append("div").attr({"class":"tooltip"}).append("h1");
+	this.sliderDiv = this.container.append("div").attr({class:"carSliders"});
 	this.container.append("div").attr({
 		"class":"buttons",
 		"title":"Car Type"})

@@ -217,6 +217,19 @@ svg text.hidden {
   text-shadow: 2px 3px 3px black;
   color: white;
 }
+.carSliders {
+  /*& .slider:before{
+		content: attr(title) ;
+		position:absolute;
+		margin-left: -95px;
+		top:-.25em;
+		.uiLabel;
+	}*/
+}
+.carSliders.slider {
+  margin-top: 1.20em;
+  /* 2.25em */
+}
 .savingsSliders .slider {
   margin-top: 1.65em;
   /* 2.25em */

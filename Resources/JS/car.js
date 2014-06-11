@@ -1,4 +1,4 @@
-function carGraph( sel ){
+function carGraph( sel, cartype ){
 	self = this;
 	this.months= [
 		"JAN","FEB","MAR","APR","MAY","JUN","JUL","AUG","SEP","OCT","NOV","DEC"
@@ -17,8 +17,8 @@ function carGraph( sel ){
 	this.amParams = {
 		contrib: 600,
 		rate: 7,
-	//	balance: this.cars.Midsized
-		balance: 25000
+	//	balance: this.cars.Midsizeds
+		balance: this.cars[cartype]
 	}
 	this.amortize();
 	//set up viewport size, etc.

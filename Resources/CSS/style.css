@@ -161,6 +161,9 @@ svg text.hidden {
   font-family: Arial;
   margin-top: 1.5em;
 }
+.slider.rate {
+  width: 630px;
+}
 .slider:before {
   content: attr(title);
   position: absolute;
@@ -225,14 +228,17 @@ svg text.hidden {
 		top:-.25em;
 		.uiLabel;
 	}*/
+
 }
 .carSliders.slider {
   margin-top: 1.20em;
   /* 2.25em */
+
 }
 .savingsSliders .slider {
   margin-top: 1.65em;
   /* 2.25em */
+
 }
 .savingsSliders .slider:before {
   content: attr(title);

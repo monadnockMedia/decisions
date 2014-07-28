@@ -15,11 +15,14 @@
 
 /* Prevents highlighting on anything */
 * {
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+	-webkit-user-select: none !important;
+	-khtml-user-select: none !important;
+	-moz-user-select: none !important; 
+	-ms-user-select: none !important;
+	user-select: none !important;
+	
+	-webkit-user-drag: none !important;
+	user-drag: none !important;
 }
 
 
@@ -41,6 +44,12 @@ html, body {
 	height: 768px;
 	background-color:transparent;
 	background-image:url('../IMAGES/saving/InvestBG2.jpg');
+	
+	-webkit-user-select: none !important;
+	-khtml-user-select: none !important;
+	-moz-user-select: none !important; 
+	-ms-user-select: none !important;
+	user-select: none !important;
 }
 
 #screenContainer.car1 {
@@ -78,6 +87,18 @@ html, body {
 
 #screenContainer.save3 {
 	background-image:url('../IMAGES/saving/InvestBG3.png');
+}
+
+#screenContainer.lotto1 {
+	background-image:url('../IMAGES/lottery/LotteryBG1_Opacity.png');
+}
+
+#screenContainer.lotto2 {
+	background-image:url('../IMAGES/lottery/LotteryBG2_Opacity.png');
+}
+
+#screenContainer.lotto3 {
+	background-image:url('../IMAGES/lottery/LotteryBG3.png');
 }
 
 #attractLoop {
@@ -146,6 +167,12 @@ html, body {
 	top:1025px;
 	left:0px;
 	float:left;
+	
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .fadeImg {
@@ -154,6 +181,12 @@ html, body {
 	position:absolute;
 	top:0px;
 	left:0px;
+	
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .scenarioSelectBtn {
@@ -174,6 +207,14 @@ html, body {
 	-ms-transform:scale(0.1,0.1); 
 	-webkit-transform:scale(0.1,0.1);
 	z-index:1;
+	
+	-webkit-box-shadow: 0px 0px 15px 3px rgba(255, 255, 255, 1);
+	
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .circleText {
@@ -223,6 +264,12 @@ h2 {
 	width:1024px;
 	margin-top:100px;
 	text-shadow: 4px 3px 4px rgba(0, 0, 0, 1), 4px 3px 4px rgba(0, 0, 0, 1), 4px 3px 4px rgba(0, 0, 0, 1);
+	
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	user-select: none;
 }
 
 .nextBtn {
@@ -241,6 +288,24 @@ h2 {
 	box-shadow: 0px 0px 15px 0px #A4DBE8;
 	color:#A4DBE8;
 	opacity:0;
+}
+
+.nextBtnFake {
+	position:absolute;
+	width:150px;
+	height:50px;
+	text-align:center;
+	border-radius: 10px;
+	
+	font-family:"sub-title";
+	font-size:42px;
+	line-height:50px;
+	
+	border:2px solid #A4DBE8;
+	background: -webkit-linear-gradient(top, #070047 15%,#10069f 40%,#1E2989 50%,#10069f 60%,#070047 85%);
+	box-shadow: 0px 0px 15px 0px #A4DBE8;
+	color:#A4DBE8;
+	opacity:1;
 }
 
 .nextBtn.car {
@@ -281,6 +346,10 @@ h2 {
 }
 
 .nextBtn:active {
+	background: -webkit-linear-gradient(top, #002487 0%,#0758af 28%,#0758af 28%,#2c69cc 51%,#0758af 79%,#002487 99%);
+}
+
+.nextBtnFake:active {
 	background: -webkit-linear-gradient(top, #002487 0%,#0758af 28%,#0758af 28%,#2c69cc 51%,#0758af 79%,#002487 99%);
 }
 

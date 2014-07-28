@@ -30,11 +30,42 @@
 }
 body {
   overflow: hidden;
-  background-color: gray;
-  background-image: url("../IMG/money_tunnel.png");
+  background-color: black;
   width: 1024px;
   height: 768px;
-  background-repeat: none;
+  background-repeat: no-repeat;
+  margin: 0px !important;
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+* {
+  -webkit-user-select: none !important;
+  -khtml-user-select: none !important;
+  -moz-user-select: none !important;
+  -ms-user-select: none !important;
+  user-select: none !important;
+  -webkit-user-drag: none !important;
+  user-drag: none !important;
+}
+.ui-dialog .ui-dialog-buttonpane {
+  text-align: center !important;
+}
+.ui-dialog .ui-dialog-content {
+  box-shadow: none;
+}
+.ui-dialog .ui-dialog-buttonpane {
+  border: none;
+  box-shadow: none;
+  background: none;
+}
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+  float: none !important;
+  margin-left: 18px;
 }
 #chart {
   width: 90%;
@@ -55,7 +86,7 @@ body {
   filter: url(#glow1);
 }
 .glow domain {
-  visibility: hiddne;
+  visibility: hidden;
 }
 .bevel {
   filter: url(#Bevel2);
@@ -422,4 +453,57 @@ line.principle {
   100% {
     box-shadow: 0 0 0px #e272c4;
   }
+}
+#lottery_screen3 * {
+  font-family: "medium";
+  margin: 0;
+  padding: 0;
+  font-size: 14px;
+  overflow: visible;
+}
+#lottery_screen3 .tick line {
+  stroke: white;
+  fill: none;
+  stroke-width: 1;
+  opacity: 1;
+}
+#lottery_screen3 .domain {
+  stroke: white;
+  fill: none;
+  stroke-width: 1;
+}
+#lottery_screen3 rect.lump {
+  fill: #a4dbe8;
+}
+#lottery_screen3 rect.annuity {
+  fill: #c5299b;
+}
+#lottery_screen3 path.lump {
+  stroke: #a4dbe8;
+  stroke-width: 2px;
+}
+#lottery_screen3 path.annuity {
+  stroke: #c5299b;
+  stroke-width: 2px;
+}
+#lottery_screen3 .annuity {
+  color: #c5299b;
+}
+#lottery_screen3 .lump {
+  color: #a4dbe8;
+}
+#lottery_screen3 h2.lump {
+  color: white;
+  margin-bottom: 5px;
+  margin-top: 25px;
+  font-size: 22px;
+}
+#lottery_screen3 h3:before {
+  content: "\25A0";
+}
+#lottery_screen3 .pipe {
+  stroke: green;
+}
+#lottery_screen3 .slider {
+  margin-bottom: 10px;
 }

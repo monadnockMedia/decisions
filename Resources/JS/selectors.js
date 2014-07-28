@@ -13,6 +13,14 @@ var carType;
 var fvd;
 var lg;
 
+var attractTimer;
+var attractVis = false;
+
+var bCanClick;
+
+var idleInterval;
+var bStarted;
+
 // --------------------------- //
 
 $(function () {
@@ -21,20 +29,63 @@ $(function () {
 		console.log("Init");
 		initHTML = $(document.body).html();
 		initiated = true;
+		
+		//$("*").css({'cursor' : 'none'});
 	} else {
 		
 	}
 	
 	//Happens on EVERY restart
+	$("*").clear();
 	loadIdle();
 	curScreen = 0;
 	startAnim();
+	bCanClick = true;
+	idleInterval = setInterval(timeOut, 60000);
+	bStarted = false;
+	
+	$("*").click(function(e) {
+		clearInterval(idleInterval);
+		idleInterval = setInterval(timeOut, 60000);
+	});
 });
 
 // --------------------------- //
 
-
-//-- Click Event Handlers  -- //
+var timeOut = function() {
+	if (bStarted) {
+		try {
+			var isOpen = $( "#dialog" ).dialog( "isOpen" );
+		} catch (e) {
+			var isOpen = false;
+		}
+	
+		console.log("isOpen: ", isOpen);
+		if (!isOpen) {
+			clearInterval(idleInterval);
+			idleInterval = setInterval(timeOut, 15000);
+		
+			$( "#dialog" ).dialog({
+			      resizable: false,
+				  draggable: false,
+				  hide: "fade",
+				  show: "drop",
+			      modal: true,
+				  open: function(event, ui) { $(".ui-dialog-titlebar-close").hide(); },
+			      buttons: {
+			        "Yes!": function() {
+			          $( this ).dialog( "close" );
+					  clearInterval(idleInterval);
+					  idleInterval = setInterval(timeOut, 60000);
+			        }
+			      }
+			    });
+		} else {
+			clearInterval(idleInterval);
+			hardReset();
+		}
+	}
+}
 
 //Removes the attract loop and animates in the scenarioSelectBtns
 var startAnim = function() {
@@ -46,24 +97,8 @@ var startAnim = function() {
 	      duration: 0.4,
 	      effect:'easeInOut',
 		  onStop: function(){
-			$(".scenarioSelectBtn").each( function( i, v ) {
-			  	$( this ).tween({
-				   opacity:{
-				      start: 0,
-				      stop: 100,
-				      time: (i/2)-(0.35*i),
-				      duration: 0.25,
-				      effect:'easeInOut'
-				   },
-				   transform:{
-				      start: 'rotate(0deg) scale( 0.1 )',
-				      stop: 'rotate(720deg) scale( 1 )',
-				      time: (i/2)-(0.35*i),
-				      duration: 1,
-				      effect:'elasticOut'
-				   }
-				}).play();
-			});
+			attractTimer = setInterval(function(){attract()}, 4500);
+			attractLoopShow();
 		   }
 	   }
 	}).play();
@@ -71,48 +106,109 @@ var startAnim = function() {
 	$("#attractLoop").slideUp(500);
 };
 
-//Select scenario from main menu buttons
-$(".scenarioSelectBtn").click(function(e) {
-	scenario = $(this).attr("category");
-	curScreen = 1;
-	//Hide this stuff
-	$('#screenContainer').tween({
+var attract = function() {
+	if (attractVis) {
+		attractLoopHide();
+	} else {
+		attractLoopShow();
+	}
+}
+
+var attractLoopHide = function() {
+	attractVis = false;
+	$(".scenarioSelectBtn").each( function( i, v ) {
+	  	$( this ).tween({
 		   opacity:{
 		      start: 100,
 		      stop: 0,
-		      time: 0,
-		      duration: 0.5,
-		      effect:'sineOut'
+		      time: 3+(i/1)-(0.5*i), // 0.5+(i/2)-(0.35*i)
+		      duration: 0.25,
+		      effect:'easeInOut'
 		   },
-		   onStop: function (elem) {
-			  $("#scenarioSelect").remove();
-			  $(".title").remove();
-			  loadScenario();
+		   transform:{
+		      start: 'rotate(0deg) scale( 1 )',
+		      stop: 'rotate(720deg) scale( 0.1 )',
+		      time: 3+(i/1)-(0.5*i),
+		      duration: 1,
+		      effect:'elasticOut'
 		   }
-	}).play();
-});
+		}).play();
+	});
+}
+
+var attractLoopShow = function() {
+	attractVis = true;
+	$(".scenarioSelectBtn").each( function( i, v ) {
+	  	$( this ).tween({
+		   opacity:{
+		      start: 0,
+		      stop: 100,
+		      time: 0.5+(i/1)-(0.35*i), // 0.5+(i/2)-(0.35*i)
+		      duration: 0.25,
+		      effect:'easeInOut'
+		   },
+		   transform:{
+		      start: 'rotate(0deg) scale( 0.1 )',
+		      stop: 'rotate(720deg) scale( 1 )',
+		      time: 0.5+(i/1)-(0.35*i),
+		      duration: 1,
+		      effect:'elasticOut'
+		   }
+		}).play();
+	});
+}
+
+//Select scenario from main menu buttons
+	$(".scenarioSelectBtn").click(function(e) {
+		if ($(this).css("opacity") >= 0.75 && bCanClick) {
+			bCanClick = false;
+			bStarted = true;
+			clearInterval(attractTimer);
+			scenario = $(this).attr("category");
+			console.log("Hit Select Btn: ", scenario);
+			curScreen = 1;
+			//Hide this stuff
+			$('#screenContainer').tween({
+				   opacity:{
+				      start: 100,
+				      stop: 0,
+				      time: 0,
+				      duration: 0.5,
+				      effect:'sineOut'
+				   },
+				   onStop: function (elem) {
+					  $("#scenarioSelect").remove();
+					  $(".title").remove();
+					  loadScenario();
+				   }
+			}).play();
+		}
+	});
+
 
 //Next Button During Scenarios
 var bindNextBtn = function() {
 	$(".nextBtn").click(function(e) {
+		if (bCanClick) {
+			bCanClick = false;
+			if ($(this).hasClass("economy")) {
+				console.log("Economy");
+				carType = "Economy";
+			} else if ($(this).hasClass("midsize")) {
+				console.log("Midsized");
+				carType = "Midsized";
+			} else if ($(this).hasClass("luxury")) {
+				console.log("Luxury");
+				carType = "Luxury";
+			}
 		
-		if ($(this).hasClass("economy")) {
-			console.log("Economy");
-			carType = "Economy";
-		} else if ($(this).hasClass("midsize")) {
-			console.log("Midsized");
-			carType = "Midsized";
-		} else if ($(this).hasClass("luxury")) {
-			console.log("Luxury");
-			carType = "Luxury";
-		}
-		
-		console.log("NEXT Clicked");
-		curScreen++;
-		if (curScreen == 4) {
-			hardReset();
-		} else {
-			loadScenario();
+			console.log("NEXT Clicked");
+			curScreen++;
+			if (curScreen == 4) {
+				hardReset();
+			} else {
+				loadScenario();
+			}
 		}
 	});
 }
@@ -129,6 +225,39 @@ var initGraph = function(){
 		case "car":
 			lg = new carGraph("#chart", carType);
 			break;
+			
+		case "lottery":
+			lg = new Chart("#chart", fvd);
+			$("svg").css("padding", "0.5em");
+			$(".nextBtnFake").click(function(e) {
+				$('.screenText').tween({
+					   opacity:{
+					      start: 100,
+					      stop: 0,
+					      time: 0,
+					      duration: 0.25,
+					      effect:'sineOut'
+					   },
+					   onStop: function (elem) {
+				          
+						  $(".screenText").remove();
+					   }
+				}).play();
+				
+				$('.nextBtnFake').tween({
+					   opacity:{
+					      start: 100,
+					      stop: 0,
+					      time: 0,
+					      duration: 0.25,
+					      effect:'sineOut'
+					   },
+					   onStop: function (elem) {
+						  $(".nextBtnFake").remove();
+					   }
+				}).play();
+			});
+			break;
 	}
 };
 
@@ -137,6 +266,8 @@ var initGraph = function(){
 //-- Function Vars  -- //
 
 var hardReset = function() {
+	clearInterval(attractTimer);
+	bStarted = false;
 	$(document.body).empty().append(initHTML);
 }
 
@@ -223,6 +354,20 @@ var loadScenario = function() {
 			break;
 			
 		case "lottery":
+			console.log("lottery");
+			$("#screenContainer").load("lottery.html #lottery_screen" + curScreen, function() {
+				console.log("LOAD LOTTERY.HTML");
+				animateScenario();
+				if (curScreen == 1) {
+					$("#screenContainer").addClass("lotto1");
+				} else if (curScreen == 2) {
+					$("#screenContainer").removeClass("lotto1");
+					$("#screenContainer").addClass("lotto2");
+				} else if (curScreen == 3) {
+					$("#screenContainer").removeClass("lotto2");
+					$("#screenContainer").addClass("lotto3");
+				}
+			});
 			break;
 	}	
 };
@@ -391,6 +536,7 @@ var animateScenario = function() {
 			   onStop: function(elem) {
 					if (i == nextBtnCnt) {
 						bindNextBtn();
+						bCanClick = true;
 					}
 			   }
 			}).play();

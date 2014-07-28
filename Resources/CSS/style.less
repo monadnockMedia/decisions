@@ -33,12 +33,52 @@
 }
 body{
 	overflow:hidden;
-	background-color: gray;
-	background-image: url("../IMG/money_tunnel.png");
+	background-color: black;
 	width: 1024px;
 	height: 768px;
-	background-repeat: none;
+	background-repeat: no-repeat;
+	margin:0px !important;
+	
+	-webkit-user-select: none !important;
+	-khtml-user-select: none !important;
+	-moz-user-select: none !important; 
+	-ms-user-select: none !important;
+	user-select: none !important;
+	
+	-webkit-user-drag: none !important;
+	user-drag: none !important;
 }
+
+* {
+	-webkit-user-select: none !important;
+	-khtml-user-select: none !important;
+	-moz-user-select: none !important; 
+	-ms-user-select: none !important;
+	user-select: none !important;
+	
+	-webkit-user-drag: none !important;
+	user-drag: none !important;
+}
+
+.ui-dialog .ui-dialog-buttonpane { 
+    text-align: center !important;
+}
+
+.ui-dialog .ui-dialog-content { 
+    box-shadow:none;
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+	border:none;
+	box-shadow:none;
+	background:none;
+	
+	& .ui-dialog-buttonset {
+		float: none !important;
+		margin-left:18px;
+	}
+}
+
 #chart{
 	width: 90%;
 	height: 550px;
@@ -68,7 +108,7 @@ body{
 	filter:url(#glow1);
 	}
 	& domain{
-		visibility: hiddne;
+		visibility: hidden;
 	}
 	
 
@@ -193,9 +233,9 @@ svg text{
 .tick {
 	& line{stroke: @white}
 	& text{
-	font-size: .33em;
-	
-}}
+		font-size: .33em;
+	}
+}
 .slider{
 	font-family: Arial;
 	margin-top: 1.5em;
@@ -489,5 +529,73 @@ line.principle{
 	15%{ box-shadow: 0 0 20px 4px  @warnGlow; }
 	30%{ box-shadow: 0 0 0px  @warnGlow; }
 	100%{ box-shadow: 0 0 0px  @warnGlow; }
+}
+
+#lottery_screen3 {
+	* {
+	    font-family: "medium";
+	    margin: 0;
+	    padding:0;
+	    font-size: 14px;
+		overflow:visible;
+	}
+	
+	
+	.tick line{
+	    stroke: white;
+	    fill: none;
+	    stroke-width: 1;
+	    opacity: 1;
+	}
+
+	.domain{
+	    stroke: white;
+	    fill: none;
+	    stroke-width: 1;
+	}
+
+	rect.lump{
+	    fill: @lightblue;
+	}
+
+	rect.annuity{
+	    fill: @pink;
+	}
+
+	path.lump{
+	    stroke: @lightblue;
+	    stroke-width: 2px;
+	}
+
+	path.annuity{
+	    stroke: @pink;
+	    stroke-width: 2px;
+	}
+
+	.annuity{
+	    color: @pink;
+	}
+	.lump{
+	    color: @lightblue;
+	}
+	
+	h2.lump {
+		color:white;
+		margin-bottom:5px;
+		margin-top:25px;
+		font-size:22px;
+	}
+
+	h3:before{
+	    content:"\25A0";
+	}
+
+	.pipe{
+	    stroke: green;
+	}
+
+	.slider{
+		margin-bottom: 10px
+	}
 }
 

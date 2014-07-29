@@ -473,13 +473,13 @@ line.principle {
   stroke-width: 1;
 }
 #lottery_screen3 rect.lump {
-  fill: #a4dbe8;
+  fill: #53bbd3;
 }
 #lottery_screen3 rect.annuity {
   fill: #c5299b;
 }
 #lottery_screen3 path.lump {
-  stroke: #a4dbe8;
+  stroke: #53bbd3;
   stroke-width: 2px;
 }
 #lottery_screen3 path.annuity {
@@ -490,12 +490,12 @@ line.principle {
   color: #c5299b;
 }
 #lottery_screen3 .lump {
-  color: #a4dbe8;
+  color: #53bbd3;
 }
 #lottery_screen3 h2.lump {
   color: white;
   margin-bottom: 5px;
-  margin-top: 25px;
+  margin-top: 12px;
   font-size: 22px;
 }
 #lottery_screen3 h3:before {

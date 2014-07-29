@@ -41,13 +41,22 @@ $(function () {
 	curScreen = 0;
 	startAnim();
 	bCanClick = true;
-	idleInterval = setInterval(timeOut, 60000);
+	idleInterval = setInterval(timeOut, 90000);
 	bStarted = false;
 	
-	$("*").click(function(e) {
+/*	$("*").click(function(e) {
+		console.log("Reset Idle");
 		clearInterval(idleInterval);
-		idleInterval = setInterval(timeOut, 60000);
-	});
+		idleInterval = setInterval(timeOut, 90000);
+	});*/
+	
+	
+});
+
+$( "*" ).on( "click", function() {
+  	console.log("Reset Idle");
+	clearInterval(idleInterval);
+	idleInterval = setInterval(timeOut, 90000);
 });
 
 // --------------------------- //
@@ -76,7 +85,7 @@ var timeOut = function() {
 			        "Yes!": function() {
 			          $( this ).dialog( "close" );
 					  clearInterval(idleInterval);
-					  idleInterval = setInterval(timeOut, 60000);
+					  idleInterval = setInterval(timeOut, 90000);
 			        }
 			      }
 			    });
@@ -254,6 +263,19 @@ var initGraph = function(){
 					   },
 					   onStop: function (elem) {
 						  $(".nextBtnFake").remove();
+					   }
+				}).play();
+				
+				$('.overlay').tween({
+					   opacity:{
+					      start: 100,
+					      stop: 0,
+					      time: 0,
+					      duration: 0.25,
+					      effect:'sineOut'
+					   },
+					   onStop: function (elem) {
+						  $(".overlay").remove();
 					   }
 				}).play();
 			});

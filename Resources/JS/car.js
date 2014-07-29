@@ -435,7 +435,7 @@ cgP.buildSliders = function(){
 	
 	this.contributionSlider = this.container.append("div").attr({
 		"class": "slider contribution car",
-		title: "Payment"
+		title: "Pay/Mo."
 		
 		});
 	this.rateSlider = this.container.append("div").attr(	{

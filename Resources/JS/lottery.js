@@ -22,9 +22,9 @@ var Chart = function (sel) {
     this.padding = {
         left: 60,
         right: 120,
-        top: 10,
+        top: 18,
         bottom: 20,
-        gutter: 20
+        gutter: 60
     };
     
     this.dimen.height = this.dimen.bars.height+this.dimen.lines.height+this.padding.gutter+self.padding.bottom+self.padding.top;

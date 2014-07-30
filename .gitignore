@@ -1,4 +1,7 @@
 
+node_modules/
+webkitbuilds/
+
 *.tmproj
 
 dec_calc.nw

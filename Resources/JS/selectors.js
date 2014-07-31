@@ -590,3 +590,45 @@ $( "#adaBtn" ).on( "click", function() {
 		adaStyle();
 	}
 });
+
+var nwKiosk = function(){
+	var mouseHidden =true;
+	var kioskMode=true;
+	var devTools=true;
+	var gui =require('nw.gui');
+	//setInterval(focus_window,5000);
+
+	var win = gui.Window.get();
+	this.win = win;
+	this.gui = gui;
+	
+	this.setup = function(){$(document).keypress(function(d){
+		switch(d.keyCode)
+		{
+		case 107:
+		  (kioskMode) ? win.enterKioskMode() : win.leaveKioskMode() ;
+		  kioskMode = !kioskMode;
+		  break;
+		case 109:
+		  (mouseHidden) ? $("body").css("cursor","none") : $("body").css("cursor","pointer") ;
+		  mouseHidden=!mouseHidden;
+		  break;
+		case 100:
+		  (devTools) ? gui.Window.get().showDevTools() : gui.Window.get().closeDevTools();
+		  devTools=!devTools;
+		  break;
+		}
+
+
+	})}
+	this.hideMouse = function(){
+		$("body").css("cursor","none")
+	}
+	this.showMouse = function(){
+		$("body").css("cursor","pointer")
+	}
+	
+}
+$(function(){nwK = new nwKiosk();
+nwK.hideMouse();
+nwK.setup();})

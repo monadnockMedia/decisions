@@ -43,14 +43,6 @@ $(function () {
 	bCanClick = true;
 	idleInterval = setInterval(timeOut, 90000);
 	bStarted = false;
-	
-/*	$("*").click(function(e) {
-		console.log("Reset Idle");
-		clearInterval(idleInterval);
-		idleInterval = setInterval(timeOut, 90000);
-	});*/
-	
-	
 });
 
 $( "*" ).on( "click", function() {
@@ -572,3 +564,29 @@ var getTargetAnim = function(target) {
 }
 
 
+var ada = false;
+
+var adaChecker = setInterval(function(){adaStyle()}, 500);
+
+
+var adaStyle = function() {
+	if (!ada) {
+		console.log("ada OFF");
+		$("h1,h2,h3,h4,h5,p,span,.ui-button-text-only,.dialog,.nextBtn,.scenarioSelectBtn,.titleChart,.smaller,.small,.circleText").removeClass("adaStyle");
+		
+	} else {
+		console.log("ada ON");
+		$("h1,h2,h3,h4,h5,p,span,.ui-button-text-only,.dialog,.nextBtn,.scenarioSelectBtn,.titleChart,.smaller,.small,.circleText").addClass("adaStyle");
+	}
+}
+
+$( "#adaBtn" ).on( "click", function() {
+	console.log("ADA: ", ada);
+	if (!ada) {
+		ada = true;
+		adaStyle();
+	} else {
+		ada = false;
+		adaStyle();
+	}
+});

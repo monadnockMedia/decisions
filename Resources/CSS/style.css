@@ -507,3 +507,41 @@ line.principle {
 #lottery_screen3 .slider {
   margin-bottom: 10px;
 }
+#adaBtn {
+  background: url('../IMAGES/ada2.png') no-repeat scroll top left;
+  background-size: 79px 67px;
+  width: 79px;
+  height: 67px;
+  position: absolute;
+  left: 945px;
+  top: 701px;
+}
+#adaBtn:active {
+  background: url('../IMAGES/ada.png') no-repeat scroll top left;
+  background-size: 79px 67px;
+  width: 79px;
+  height: 67px;
+  position: absolute;
+  left: 945px;
+  top: 701px;
+}
+.adaStyle {
+  background-color: black !important;
+  font-family: "sans-serif" !important;
+  color: white !important;
+}
+.adaStyle h1 {
+  font-size: 32px !important;
+}
+.adaStyle .large {
+  font-size: 32px !important;
+}
+.adaStyleh1 {
+  font-size: 32px !important;
+}
+.adaStyle.large {
+  font-size: 32px !important;
+}
+.adaStyle.scenarioSelectBtn {
+  font-size: 32px !important;
+}

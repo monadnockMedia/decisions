@@ -221,7 +221,7 @@ html, body {
 	position:absolute;
 	text-align:center;
 	
-	font-family:"bold" !important;
+	font-family:"bold";
 	font-size:32px;
 	width:250px;
 	height:250px;

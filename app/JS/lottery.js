@@ -1,4 +1,4 @@
-var Chart = function (sel) {
+var Lotto = function (sel) {
     self = this;
     
     this.dimen = {
@@ -55,7 +55,18 @@ var Chart = function (sel) {
         
         
     };
-    
+    this.hideTip = function(){
+		$(".tooltip").animate({
+			opacity: 0
+		})
+	}
+	
+	this.showTip = function(){
+		$(".tooltip").animate({
+			opacity: 1
+		})
+	}
+	
     this.sliderParams = {
         rate:{
             min: 0.01, 
@@ -64,9 +75,21 @@ var Chart = function (sel) {
             value: self.params.rate,
             slide: function(e,ui){
                 self.params.rate = ui.value;
-                $(ui.handle).text((ui.value*100).toFixed(2));
+
+				$(this).find(".ui-slider-handle").html("");
+				//console.log(ui.handle);
+				$(".tooltip").toggleClass("rect",false).css({
+					"left": self.slideScales.rate(ui.value),
+					"top": $(ui.handle).offset().top-55
+				}).html((ui.value*100).toFixed(1)+"%")
+				
                 self.redraw();
-            }
+            },
+			stop: function(e,ui){
+				self.hideTip();
+				$(this).find(".ui-slider-handle").html((ui.value*100).toFixed(1)+"%");
+			},
+			start: function(u,v){self.showTip()}
         },
         allowance:{
             min: 0, 
@@ -75,14 +98,26 @@ var Chart = function (sel) {
             value: self.params.lump.allowance,
             slide: function(e,ui){
                 self.params.lump.allowance = ui.value;
-                $(ui.handle).text((ui.value).toFixed(2));
+                $(this).find(".ui-slider-handle").html("");
+				//console.log(ui.handle);
+				$(".tooltip").toggleClass("rect",true).css({
+					"left": self.slideScales.allowance(ui.value),
+					"top": $(ui.handle).offset().top-55
+				}).html(finance.format(ui.value, 'USD'))
+				
                 self.redraw();
-            }
+            },
+			stop: function(e,ui){
+				self.hideTip();
+				$(this).find(".ui-slider-handle").html(finance.format(ui.value, 'USD'));
+			},
+			start: function(u,v){self.showTip()}
         }
     };
     this.data = this.calculate();
     
     this.div = d3.select(sel);
+this.div.append("div").attr({"class":"tooltip"}).append("h1");
     this.svg = this.div.append("svg")
             .attr("width", this.dimen.width)
             .attr("height", this.dimen.height);
@@ -134,7 +169,7 @@ var Chart = function (sel) {
     
 };
 
-Chart.prototype.buildAxes = function () {
+Lotto.prototype.buildAxes = function () {
    this.yAxis = this.svg.append("g")
         .attr("class", "axis")
         .attr("width", this.dimen.height)
@@ -152,7 +187,7 @@ Chart.prototype.buildAxes = function () {
         .call(self.axes.line);
 };
 
-Chart.prototype.updateAxes = function(){
+Lotto.prototype.updateAxes = function(){
     var min = 0;
     var ydom = [0, Math.max(self.params.max, +self.data[0].lump.totalPaid) ];
     console.log(ydom);
@@ -160,7 +195,7 @@ Chart.prototype.updateAxes = function(){
     self.scales.tall.domain(ydom);
    this.yAxis.call(self.axes.y);     
 }
-Chart.prototype.buildBars = function(){
+Lotto.prototype.buildBars = function(){
     this.barGroup = this.svg.append("g").attr({
         class: "bars",
         transform: "translate(0,"+(self.inner.bars.top)+")"
@@ -211,17 +246,17 @@ Chart.prototype.buildBars = function(){
         class: "pipeLabel",
         y: self.scales.y(self.data[0].annuity.totalPaid) + 5,
         x: self.inner.bars.r
-    }).text("\u25C1$"+self.data[0].annuity.totalPaid)
+    }).text("\u25C1"+finance.format(self.data[0].annuity.totalPaid, 'USD'))
     
    
    
 };
 
-Chart.prototype.drawBars = function(){
+Lotto.prototype.drawBars = function(){
     
 }
 
-Chart.prototype.buildLines = function(){
+Lotto.prototype.buildLines = function(){
     this.lineGroup = this.svg.append("g").attr("class","linegroup").attr("transform","translate(0,"+self.padding.top+")");
     this.lineData = {};
     this.lineGroup.append("text").text("").attr({
@@ -240,7 +275,7 @@ Chart.prototype.buildLines = function(){
         
 }
 
-Chart.prototype.mapLines = function(){
+Lotto.prototype.mapLines = function(){
     this.lineData = {
         annuity:this.data.map(function(d){return d.annuity.value}),
         lump: this.lineData = this.data.map(function(d){return d.lump.value})
@@ -249,11 +284,11 @@ Chart.prototype.mapLines = function(){
    
 }
 
-Chart.prototype.drawLines = function(){
+Lotto.prototype.drawLines = function(){
     this.lines.attr("d", function(d){ return self.line(self.lineData[d])});
     this.lineLabels.text(function(d){
              var l = self.lineData[d].length;
-            return "\u25C1$"+self.lineData[d][l-1];
+            return "\u25C1"+finance.format(self.lineData[d][l-1], 'USD');
         }).attr({
             x: self.inner.bars.r-22,
             y: function(d){
@@ -263,7 +298,7 @@ Chart.prototype.drawLines = function(){
         })
 }
 
-Chart.prototype.redraw = function(){
+Lotto.prototype.redraw = function(){
     
     self.data = self.calculate();
     this.mapLines();
@@ -297,29 +332,51 @@ Chart.prototype.redraw = function(){
       
         y: self.scales.y(self.data[0].annuity.totalPaid) + 5,
         x: self.inner.bars.r
-    }).text("\u25C1$"+self.data[0].annuity.totalPaid)
+    }).text("\u25C1"+finance.format(self.data[0].annuity.totalPaid, 'USD'))
     
     this.drawLines();
     
     
 }
 
-Chart.prototype.buildSlider = function(){
+Lotto.prototype.buildSlider = function(){
+		this.slideScales = {};
+		
         this.div.append("h2").text("Interest Rate").attr("class","lump");
         this.div.append("div").attr("class","slider rate").attr({
             style: "width:"+self.inner.bars.w+"px; margin-left:"+self.padding.left+"px;"
        
         });
         $(".slider.rate").slider(self.sliderParams.rate);
-    this.div.append("h2").text("Allowance").attr("class","lump")
-       this.div.append("div").attr("class","slider allowance").attr({
+		
+		var rateOff = $(".slider.rate").offset();
+		var rateW = $(".slider.rate").width();
+		
+		this.slideScales.rate = d3.scale.linear()
+			.range([rateOff.left,rateOff.left+rateW])
+			.domain([self.sliderParams.rate.min, self.sliderParams.rate.max])
+
+
+    	this.div.append("h2").text("Allowance").attr("class","lump")
+		this.div.append("div").attr("class","slider allowance").attr({
             style: "width:"+self.inner.bars.w+"px; margin-left:"+self.padding.left+"px;"
        
         });
+
         $(".slider.allowance").slider(self.sliderParams.allowance);
+		
+		var allOff = $(".slider.allowance").offset();
+		var allW = $(".slider.allowance").width();
+		
+		this.slideScales.allowance = d3.scale.linear()
+			.range([allOff.left,allOff.left+allW])
+			.domain([self.sliderParams.allowance.min, self.sliderParams.allowance.max])
+	
+		
+		
 }
 
-Chart.prototype.calculate = function(){
+Lotto.prototype.calculate = function(){
     var p = this.params;
     
     var res = [];

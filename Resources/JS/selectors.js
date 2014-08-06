@@ -21,6 +21,14 @@ var bCanClick;
 var idleInterval;
 var bStarted;
 
+var keyDownSnd = document.createElement('audio');
+keyDownSnd.setAttribute('src', 'SOUND/d_click.ogg');
+keyDownSnd.load();
+
+var keyUpSnd = document.createElement('audio');
+keyUpSnd.setAttribute('src', 'SOUND/u_click.ogg');
+keyUpSnd.load();
+
 // --------------------------- //
 
 $(function () {
@@ -32,7 +40,7 @@ $(function () {
 		
 		//$("*").css({'cursor' : 'none'});
 	} else {
-		
+	
 	}
 	
 	//Happens on EVERY restart
@@ -41,14 +49,14 @@ $(function () {
 	curScreen = 0;
 	startAnim();
 	bCanClick = true;
-	idleInterval = setInterval(timeOut, 90000);
+	idleInterval = setTimeout(timeOut, 90000);
 	bStarted = false;
 });
 
-$( "*" ).on( "click", function() {
+$( "*" ).on( "mousedown", function() {
   	console.log("Reset Idle");
-	clearInterval(idleInterval);
-	idleInterval = setInterval(timeOut, 90000);
+	clearTimeout(idleInterval);
+	idleInterval = setTimeout(timeOut, 90000);
 });
 
 // --------------------------- //
@@ -63,8 +71,8 @@ var timeOut = function() {
 	
 		console.log("isOpen: ", isOpen);
 		if (!isOpen) {
-			clearInterval(idleInterval);
-			idleInterval = setInterval(timeOut, 15000);
+			clearTimeout(idleInterval);
+			idleInterval = setTimeout(timeOut, 15000);
 		
 			$( "#dialog" ).dialog({
 			      resizable: false,
@@ -76,13 +84,13 @@ var timeOut = function() {
 			      buttons: {
 			        "Yes!": function() {
 			          $( this ).dialog( "close" );
-					  clearInterval(idleInterval);
-					  idleInterval = setInterval(timeOut, 90000);
+					  clearTimeout(idleInterval);
+					  idleInterval = setTimeout(timeOut, 90000);
 			        }
 			      }
 			    });
 		} else {
-			clearInterval(idleInterval);
+			clearTimeout(idleInterval);
 			hardReset();
 		}
 	}
@@ -98,7 +106,7 @@ var startAnim = function() {
 	      duration: 0.4,
 	      effect:'easeInOut',
 		  onStop: function(){
-			attractTimer = setInterval(function(){attract()}, 4500);
+			attractTimer = setInterval(function(){attract()}, 5500);
 			attractLoopShow();
 		   }
 	   }
@@ -123,14 +131,14 @@ var attractLoopHide = function() {
 		      start: 100,
 		      stop: 0,
 		      time: 3+(i/1)-(0.5*i), // 0.5+(i/2)-(0.35*i)
-		      duration: 0.25,
+		      duration: 0.5,
 		      effect:'easeInOut'
 		   },
 		   transform:{
 		      start: 'rotate(0deg) scale( 1 )',
-		      stop: 'rotate(720deg) scale( 0.1 )',
+		      stop: 'rotate(360deg) scale( 0.1 )',
 		      time: 3+(i/1)-(0.5*i),
-		      duration: 1,
+		      duration: 1.6,
 		      effect:'elasticOut'
 		   }
 		}).play();
@@ -145,14 +153,14 @@ var attractLoopShow = function() {
 		      start: 0,
 		      stop: 100,
 		      time: 0.5+(i/1)-(0.35*i), // 0.5+(i/2)-(0.35*i)
-		      duration: 0.25,
+		      duration: 0.5,
 		      effect:'easeInOut'
 		   },
 		   transform:{
 		      start: 'rotate(0deg) scale( 0.1 )',
-		      stop: 'rotate(720deg) scale( 1 )',
+		      stop: 'rotate(360deg) scale( 1 )',
 		      time: 0.5+(i/1)-(0.35*i),
-		      duration: 1,
+		      duration: 1.6,
 		      effect:'elasticOut'
 		   }
 		}).play();
@@ -162,6 +170,7 @@ var attractLoopShow = function() {
 //Select scenario from main menu buttons
 	$(".scenarioSelectBtn").click(function(e) {
 		if ($(this).css("opacity") >= 0.75 && bCanClick) {
+			keyDownSnd.play();
 			bCanClick = false;
 			bStarted = true;
 			clearInterval(attractTimer);
@@ -191,6 +200,7 @@ var attractLoopShow = function() {
 var bindNextBtn = function() {
 	$(".nextBtn").click(function(e) {
 		if (bCanClick) {
+			keyDownSnd.play();
 			bCanClick = false;
 			if ($(this).hasClass("economy")) {
 				console.log("Economy");
@@ -202,7 +212,8 @@ var bindNextBtn = function() {
 				console.log("Luxury");
 				carType = "Luxury";
 			}
-		
+			
+			clearTimeout(idleInterval);
 			console.log("NEXT Clicked");
 			curScreen++;
 			if (curScreen == 4) {
@@ -231,6 +242,7 @@ var initGraph = function(){
 			lg = new Chart("#chart", fvd);
 			$("svg").css("padding", "0.5em");
 			$(".nextBtnFake").click(function(e) {
+				keyDownSnd.play();
 				$('.screenText').tween({
 					   opacity:{
 					      start: 100,
@@ -273,6 +285,14 @@ var initGraph = function(){
 			});
 			break;
 	}
+	
+	$( ".ui-slider-handle" ).mousedown(function() {
+	  keyDownSnd.play();
+	});
+	
+	$( ".ui-slider-handle" ).mouseup(function() {
+	  keyUpSnd.play();
+	});
 };
 
 // --------------------------- //
@@ -566,7 +586,7 @@ var getTargetAnim = function(target) {
 
 var ada = false;
 
-var adaChecker = setInterval(function(){adaStyle()}, 500);
+var adaChecker = setTimeout(function(){adaStyle()}, 500);
 
 
 var adaStyle = function() {
@@ -596,7 +616,7 @@ var nwKiosk = function(){
 	var kioskMode=true;
 	var devTools=true;
 	var gui =require('nw.gui');
-	//setInterval(focus_window,5000);
+	//setTimeout(focus_window,5000);
 
 	var win = gui.Window.get();
 	this.win = win;
@@ -618,6 +638,8 @@ var nwKiosk = function(){
 		  devTools=!devTools;
 		  break;
 		}
+		
+		
 
 
 	})}
@@ -630,5 +652,7 @@ var nwKiosk = function(){
 	
 }
 $(function(){nwK = new nwKiosk();
-nwK.hideMouse();
-nwK.setup();})
+//nwK.hideMouse();
+//nwK.setup();
+//nwK.win.enterKioskMode();
+})

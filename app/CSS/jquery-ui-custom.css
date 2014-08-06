@@ -485,15 +485,14 @@ button.ui-button::-moz-focus-inner {
   position: relative;
   border: 0;
   padding: .5em 1em;
-  background: rgba(0, 0, 0, 0.75);
+  background: none;
   overflow: auto;
 }
 .ui-dialog .ui-dialog-buttonpane {
   text-align: left;
   border-width: 1px 0 0 0;
   background-image: none;
-  background: rgba(0, 0, 0, 0.75);
-  margin-top: 0em;
+  margin-top: .5em;
   padding: .3em 1em .5em .4em;
 }
 .ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
@@ -629,6 +628,9 @@ button.ui-button::-moz-focus-inner {
   border-left: 0.7em solid transparent;
   border-right: 0.7em solid transparent;
   border-top: 1em solid #c5299b;
+}
+.tooltip.rect {
+  width: 5em;
 }
 .ui-slider-horizontal {
   height: 1em;
@@ -832,7 +834,7 @@ body .ui-tooltip {
 }
 .ui-widget-header {
   border: 1px solid #222222;
-  background: rgba(0, 0, 0, 0.95);
+  background: #10069f url(images/ui-bg_highlight-soft_75_10069F_1x100.png) 50% 50% repeat-x;
   color: #aaaaaa;
   font-weight: bold;
 }

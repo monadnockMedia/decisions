@@ -239,7 +239,7 @@ var initGraph = function(){
 			break;
 			
 		case "lottery":
-			lg = new Chart("#chart", fvd);
+			lg = new Lotto("#chart", fvd);
 			$("svg").css("padding", "0.5em");
 			$(".nextBtnFake").click(function(e) {
 				keyDownSnd.play();
@@ -622,6 +622,13 @@ var nwKiosk = function(){
 	this.win = win;
 	this.gui = gui;
 	
+	this.goFull = function(){
+		win.enterKioskMode();
+		$("html").css("cursor","none");
+		kioskMode = true;
+		mouseHidden = true;
+	}
+	
 	this.setup = function(){$(document).keypress(function(d){
 		switch(d.keyCode)
 		{
@@ -630,7 +637,7 @@ var nwKiosk = function(){
 		  kioskMode = !kioskMode;
 		  break;
 		case 109:
-		  (mouseHidden) ? $("body").css("cursor","none") : $("body").css("cursor","pointer") ;
+		  (mouseHidden) ? $("html").css("cursor","none") : $("html").css("cursor","default") ;
 		  mouseHidden=!mouseHidden;
 		  break;
 		case 100:
@@ -652,7 +659,5 @@ var nwKiosk = function(){
 	
 }
 $(function(){nwK = new nwKiosk();
-//nwK.hideMouse();
-//nwK.setup();
-//nwK.win.enterKioskMode();
-})
+nwK.setup();
+nwK.goFull();})

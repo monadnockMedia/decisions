@@ -28,7 +28,7 @@ $(function(){
 })
 
 var makeGraph = function(){
-	lg = (toggle) ? new cardGraph("#chart",fvd) : new savingsGraph("#chart",fvd);
+	lg = (toggle) ? new Lotto("#chart",fvd) : new savingsGraph("#chart",fvd);
 		//lg = new carGraph("#chart",fvd);
 		
 }

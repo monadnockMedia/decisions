@@ -10,7 +10,7 @@
   "window": {
     "title": "Decisions Calculator",
     "toolbar": true,
-    "frame": true,
+    "frame": false,
     "fullscreen": false,
     "width": 1024,
     "height": 768,

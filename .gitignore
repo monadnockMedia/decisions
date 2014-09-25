@@ -9,3 +9,5 @@ dec_calc.nw
 .nw
 
 *.nw
+
+app/cache/*

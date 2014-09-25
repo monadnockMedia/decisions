@@ -11,3 +11,5 @@ dec_calc.nw
 *.nw
 
 app/cache/*
+
+*-ck.js

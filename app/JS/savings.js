@@ -30,7 +30,7 @@ function savingsGraph( sel, _data ){
 	this.padding = {
 		left: 65,
 		right: 40,
-		top: 30,
+		top: 90,
 		bottom: 50
 	}
 	this.innerWidth = this.w - this.padding.left - this.padding.right;

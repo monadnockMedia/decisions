@@ -20,7 +20,7 @@ function savingsGraph( sel, _data ){
 	this.vData = this.data;
 	this.pData = [];
 	this.dotSize = 8;
-	this.datalength = this.data.length;
+	this.datalength = this.data.length-1;
 	this.lastDatum = this.data[this.datalength-1];
 	this.firstDatum = this.data[0];
 	this.weekRange = {min:this.firstDatum.WEEK, max: this.lastDatum.WEEK  };
@@ -197,7 +197,12 @@ lgp.updateAxes = function(){
 }
 
 lgp.buildSliders = function(){
-	this.container.append("div").attr({"class":"tooltip"}).append("h1");
+	this.container.append("div").attr({"class":"tooltip single"});
+	this.container.append("div").attr({"class":"tooltip age rect left"}).append("p").text("Start Age");
+	this.container.append("div").attr({"class":"tooltip age rect right"}).append("p").text("End Age");
+	
+	this.container.selectAll(".tooltip.age").append("h1");
+	
 	this.sliderDiv = this.container.append("div").attr({class:"savingsSliders"});
 	this.sliderDiv.append("div").attr({	
 		"class": "slider age",
@@ -222,28 +227,46 @@ lgp.buildSliders = function(){
 	var span;
 	$(".slider").slider({
 		start: function(ev,ui){
-			moveTip(ui);
-			showTip();
+			moveTip(ui,".tooltip.single");
+			showTip(".tooltip.single");
+			$(this).find("a").html(" ");
 		
 		}
 	});
-	var hideTip = function(){
-		$(".tooltip").animate({
+	var hideTip = function(sel){
+		$(sel).animate({
 			opacity: 0
 		})
 	}
 	
-	var showTip = function(){
-		$(".tooltip").animate({
+	var showTip = function(sel){
+		$(sel).animate({
 			opacity: 1
 		})
 	}
+	
+	var moveTip = function(_ui,sel){
+		console.log("MOVETIP")
+			var pos = $(_ui.handle).offset();
+			var offset = $(_ui.handle).width() /2;
+			console.log(offset);
+			$(sel).css({
+				top: pos.top,
+				left: +pos.left+offset
+			})
+	}
+	
 	$(".slider.age").slider({
 		range: true,
 		min: 0,
 		max: _self.datalength,
 		values: [0,_self.datalength],
+		start: function(ev,ui){
+			moveTip(ui,".tooltip.age");
+			showTip(".tooltip.age");
+			$(this).find("a").html(" ");
 		
+		},
 		slide: function(ev, ui){
 				
 			span = Math.ceil((ui.values[1] - ui.values[0])/52);  //span is in years, scale is in months.
@@ -263,12 +286,14 @@ lgp.buildSliders = function(){
 				
 			}
 			
-			$(".tooltip").css({
-				"left": _self.sliderScales.age(ui.value),
-				"top": $(ui.handle).offset().top
-			}).html( _self.data[ui.value].AGE )
+			$(".tooltip.age").each(function(i,v){
+				$(this).css({
+					"left": _self.sliderScales.age(ui.values[i]),
+					"top": $(ui.handle).offset().top
+				}).find("h1").html( _self.data[ui.values[i]].AGE )
+			})
 			
-				
+		
 			
 			_self.weekRange.min = ui.values[0];
 			_self.weekRange.max = ui.values[1];
@@ -276,21 +301,18 @@ lgp.buildSliders = function(){
 			return true;
 		},
 		stop: function(ev,ui){
-			$(ui.handle).html(_self.data[ui.value].AGE)
-			hideTip();
+			console.log("UI",ui,$(ui.handle));
+			
+			$(".age>.ui-slider-handle").each(function(i,v){
+				$(this).html(_self.data[ui.values[i]].AGE);
+			})
+			
+			hideTip(".tooltip.age");
 		}
 	}).find("a:first").html("15");
 	$(".slider.age").find("a:last").html("65");
 	
-	var moveTip = function(_ui,s){
-			var pos = $(_ui.handle).offset();
-			var offset = $(_ui.handle).width() /2;
-			console.log(offset);
-			$(".tooltip").css({
-				top: pos.top,
-				left: +pos.left+offset
-			}).html(s)
-	}
+
 
 
 
@@ -299,7 +321,7 @@ lgp.buildSliders = function(){
 		max: this.sliderP.contribution.max,
 		value: _self.fvParams.weeklyContribution,
 		slide: function(ev, ui){
-			$(".tooltip").css({
+			$(".tooltip.single").css({
 				"left": _self.sliderScales.contribution(ui.value),
 				"top": $(ui.handle).offset().top
 			}).html("$"+ui.value)
@@ -308,7 +330,7 @@ lgp.buildSliders = function(){
 		},
 		stop: function(ev,ui){
 			$(this).find(".ui-slider-handle").text("$"+ui.value);
-			hideTip();
+			hideTip(".tooltip.single");
 		}
 	}).find("a").html("$"+_self.fvParams.weeklyContribution);
 	
@@ -318,7 +340,7 @@ lgp.buildSliders = function(){
 		step: 0.1,
 		value: _self.fvParams.rate*100,
 		slide: function(ev, ui){
-			$(".tooltip").css({
+			$(".tooltip.single").css({
 				"left": _self.sliderScales.rate(ui.value),
 				"top": $(ui.handle).offset().top
 			}).html(ui.value+"%")
@@ -328,7 +350,7 @@ lgp.buildSliders = function(){
 		},
 		stop: function(ev,ui){
 			$(this).find(".ui-slider-handle").text(ui.value+"%");
-			hideTip();
+			hideTip(".tooltip.single");
 		}
 	}).find("a").html((_self.fvParams.rate*100)+"%");
 	

@@ -330,7 +330,8 @@ svg text.hidden {
 .slider.car:after {
   left: -135px;
 }
-.tooltip {
+.tooltip,
+.bartip {
   color: #ffffff;
   font-family: Arial;
 }

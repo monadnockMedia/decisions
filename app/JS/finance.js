@@ -105,10 +105,10 @@
 	*	Financing
 	*/
 	
-	//	calculate total of principle + interest (yearly) for x months
-	lib.calculateAccruedInterest = function(principle, months, rate){
+	//	calculate total of principal + interest (yearly) for x months
+	lib.calculateAccruedInterest = function(principal, months, rate){
 			var i = rate/1200;
-			return (principle * Math.pow(1+i,months)) - principle;
+			return (principal * Math.pow(1+i,months)) - principal;
 		};
 
 	//	determine the amount financed
@@ -179,7 +179,7 @@
 			return result;
 		};
 
-	// get an amortization schedule [ { principle: 0, interest: 0, payment: 0, paymentToPrinciple: 0, paymentToInterest: 0}, {}, {}...]
+	// get an amortization schedule [ { principal: 0, interest: 0, payment: 0, paymentToPrincipal: 0, paymentToInterest: 0}, {}, {}...]
 	lib.calculateAmortization = function(finAmount, finMonths, finInterest, finDate){
 			var payment = this.calculatePayment(finAmount, finMonths, finInterest),
 				balance = finAmount,
@@ -187,20 +187,20 @@
 				totalInterest = 0.0,
 				schedule = [],
 				currInterest = null,
-				currPrinciple = null,
+				currPrincipal = null,
 				currDate = (finDate !== undefined && finDate.constructor === Date)? finDate : (new Date());
 			
 			for(var i=0; i<finMonths; i++){
 				currInterest = balance * finInterest/1200;
 				totalInterest += currInterest;
-				currPrinciple = payment - currInterest;
-				balance -= currPrinciple;
+				currPrincipal = payment - currInterest;
+				balance -= currPrincipal;
 
 				schedule.push({
-						principle: balance,
+						principal: balance,
 						interest: totalInterest,
 						payment: payment,
-						paymentToPrinciple: currPrinciple,
+						paymentToPrincipal: currPrincipal,
 						paymentToInterest: currInterest,
 						date: new Date(currDate.getTime())
 					});

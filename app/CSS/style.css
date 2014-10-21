@@ -350,7 +350,7 @@ svg text.hidden {
 line.interest {
   fill: url(#diagonalHatch);
 }
-.principle {
+.principal {
   stroke: none;
   stroke: #c5299b;
   fill: rgba(197, 41, 155, 0.5);
@@ -373,9 +373,6 @@ line.interest {
 }
 .bar {
   stroke: none;
-}
-line.principle {
-  stroke-width: 6px;
 }
 #legend {
   -webkit-box-sizing: border-box;

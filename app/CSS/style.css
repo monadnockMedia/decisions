@@ -175,6 +175,9 @@ svg text {
 svg text.label {
   font-size: .5em;
 }
+svg text.label.text {
+  font-size: .4em;
+}
 svg text.active {
   fill: #ffffff;
   opacity: 1 !important;
@@ -374,6 +377,20 @@ line.interest {
 .bar {
   stroke: none;
 }
+.car_legend {
+  font-size: 18pt;
+  font-family: label;
+  color: white;
+  display: inline;
+  line-height: 20px;
+}
+.boxy {
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  margin-top: 6px;
+  margin-right: 6px;
+}
 #legend {
   -webkit-box-sizing: border-box;
   background-color: rgba(16, 6, 159, 0.5);
@@ -549,4 +566,11 @@ line.interest {
 }
 .adaStyle.scenarioSelectBtn {
   font-size: 32px !important;
+}
+.half {
+  float: left;
+  width: 49%;
+}
+.cardWrap {
+  height: 78px;
 }

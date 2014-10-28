@@ -60,7 +60,7 @@ function cardGraph( sel ){
 		x: this.innerLeft, y: this.innerTop,
 		width:  this.innerWidth, height: this.innerHeight
 	})
-
+	this.labelText = this.svg.append("text").attr("class","label text");
 	this.label = this.svg.append("text").attr("class","label");
 		
 	this.addYears();
@@ -309,9 +309,15 @@ cgP.drawBars = function(){
 
 	
 	});
+	
+	this.labelText.transition().attr({
+		x: self.innerRight+14, y: self.scales.y(self.data[self.data.length-1].totalPaid)-10
+	}).text("Total Paid");
+	
 	this.label.transition().attr({
 		x: self.innerRight, y: self.scales.y(self.data[self.data.length-1].totalPaid)+6
 	}).text("\u25C2"+self.formatDollars(self.data[self.data.length-1].totalPaid))
+	
 	this.lastLength = this.data.length;
 }
 
@@ -428,11 +434,24 @@ cgP.buildSliders = function(){
 	
 
 	
-	this.container.append("div").attr().append("h1").attr({
+	var div = this.container.append("div").attr("class","cardWrap").attr({
+		style:  "padding-left:"+this.padding.left+"px"
+	});
+	
+	div.append("div").attr("class","half").append("h1").attr({
 		class: "card payment",
 		title: "Monthly Payment",
-		style:  "margin-left:"+this.padding.left+"px"
+		
 	}).text( this.formatDollars(this.amParams.contrib) );
+	
+
+	var right = div.append("div").attr("class","half");
+	
+	right.append("span").attr("class","boxy interest");
+	right.append("h1").attr("class","car_legend").text("Interest");
+		right.append("br")
+	right.append("span").attr("class","boxy principal");
+	right.append("h1").attr("class","car_legend").text("Principal");
 	
 	this.termSlider = this.container.append("div").attr({
 		"class": "slider term card",

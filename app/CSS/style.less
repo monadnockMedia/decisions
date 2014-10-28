@@ -221,6 +221,9 @@ svg text{
 	fill: @white;
 	&.label{
 		font-size:.5em;
+		&.text{
+			font-size: .4em;
+		}
 	}
 	&.active{
 		fill:@white;
@@ -441,7 +444,23 @@ line.interest{
 	stroke:none;
 //	.bevel;
 }
+.car_legend{
+	font-size: 18pt;
+	font-family: label;
+	color: white;
+	display: inline;
+	line-height: 20px;
+}
 
+.boxy{
+	display: inline-block;
+	width: 18px;
+	height: 18px;
+	margin-top: 6px;
+
+	margin-right: 6px;
+
+}
 
 #legend{
 	-webkit-box-sizing: border-box;
@@ -645,4 +664,13 @@ line.interest{
 	&.scenarioSelectBtn {
 		font-size:32px !important;
 	}
+}
+
+.half{
+	float: left;
+	width: 49%;	
+}
+
+.cardWrap{
+	height: 78px;
 }
